@@ -40,7 +40,7 @@ PUT /books
 
 Add some documents to the new index
 
-```json
+```
 PUT /books/_doc/1
 {
   "id": 1,
@@ -69,7 +69,7 @@ PUT /books/_doc/3
 
 Lets check if all books were added.
 
-```json
+```
 GET /books/_search
 {
   "query": {
@@ -94,7 +94,7 @@ GET /_cat/shards/books?v
 
 Lets increase the number of replicas. It's a setting of the index so we need to update the index settings.
 
-```json
+```
 PUT /books/_settings
 {
   "index" : {
@@ -111,7 +111,7 @@ GET /_cat/shards/books?v
 
 - Q: What is the problem with the new replica?
 
-```json
+```
 GET _cluster/allocation/explain
 {
   "index": "books",
@@ -122,7 +122,7 @@ GET _cluster/allocation/explain
 
 Reset the `number_of_replicas` to `1`
 
-```json
+```
 PUT /books/_settings
 {
   "index" : {
@@ -135,7 +135,7 @@ PUT /books/_settings
 
 In order to change the number of primary shards we need to copy the data to a new index. For this, we first need to disable write operations to the index `books`.
 
-```json
+```
 PUT /books/_settings
 {
   "index.blocks.write": true
@@ -144,7 +144,7 @@ PUT /books/_settings
 
 Now to use the [Split API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-split-index.html) to create new index with two shards.
 
-```json
+```
 POST /books/_split/books2
 {
   "settings": {
@@ -155,7 +155,7 @@ POST /books/_split/books2
 
 Finally, enable write operations to original index again.
 
-```json
+```
 PUT /books/_settings
 {
   "index.blocks.write": null
@@ -180,7 +180,7 @@ PUT /books3
 
 Then we add some data to it
 
-```json
+```
 PUT /books3/_doc/4
 {
   "id": 4,
@@ -201,7 +201,7 @@ PUT /books3/_doc/5
 
 Now we can create an alias called `booksa` which points to both indices: `books` and `books3`
 
-```json
+```
 POST /_aliases
 {
   "actions": [
@@ -241,7 +241,7 @@ GET /_cat/shards/booksa?v
 
 We can also use the alias to query data. The query is executed on both underlying indices.
 
-```json
+```
 GET /booksa/_search
 {
   "query": {
@@ -256,7 +256,7 @@ The alias approach is suitable for a continous data flow, but managing the under
 
 First of all, we increase the interval of the ILM. For a production setup several minutes should be enough!
 
-```json
+```
 PUT _cluster/settings
 {
   "transient": {
@@ -267,7 +267,7 @@ PUT _cluster/settings
 
 Lets add a new lifecycle policy within the ILM. For this you need to specify the minimum age and actions for the different lifecycle phases `hot`, `warm`, `cold` and `frozen`.
 
-```json
+```
 PUT _ilm/policy/mylog-lifecycle-policy
 {
   "policy": {
@@ -308,7 +308,7 @@ PUT _ilm/policy/mylog-lifecycle-policy
 
 The ILM will dynamically create new indices which requires a template. We first create an index template for the mapping section to define the index's fields.
 
-```json
+```
 PUT _component_template/mylog-mappings
 {
   "template": {
@@ -329,7 +329,7 @@ PUT _component_template/mylog-mappings
 
 In the index template's settings section we reference the previously created ILM policy
 
-```json
+```
 PUT _component_template/mylog-settings
 {
   "template": {
@@ -342,7 +342,7 @@ PUT _component_template/mylog-settings
 
 Finally, we combine the two component tempaltes to create a new [index template](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html). Note that `index_patterns` defines the future data stream naming pattern.
 
-```json
+```
 PUT _index_template/mylog-index-template
 {
   "index_patterns": ["mylog-data-stream*"],
@@ -357,7 +357,7 @@ Thats it. We can now start adding data!
 
 As no data stream exists yet, Elasticsearch will create the stream and the underlying index automatically. As the naming convention matches our `index_pattern`, our previously created index template will be used.
 
-```json
+```
 POST /mylog-data-stream/_doc
 {
   "@timestamp": "2023-04-24T17:01:15.000Z",
@@ -367,23 +367,23 @@ POST /mylog-data-stream/_doc
 
 Lets add more data
 
-```json
+```
 POST /mylog-data-stream/_doc
 {
   "@timestamp": "2023-04-24T17:02:15.000Z",
   "message": "192.168.0.2 - Hello World 2"
 }
-POST /mylog-data-stream/\_doc
+POST /mylog-data-stream/_doc
 {
   "@timestamp": "2023-04-24T17:03:15.000Z",
   "message": "192.168.0.2 - Hello World 3"
 }
-POST /mylog-data-stream/\_doc
+POST /mylog-data-stream/_doc
 {
   "@timestamp": "2023-04-24T17:04:15.000Z",
   "message": "192.168.0.2 - Hello World 4"
 }
-POST /mylog-data-stream/\_doc
+POST /mylog-data-stream/_doc
 {
   "@timestamp": "2023-04-24T17:05:15.000Z",
   "message": "192.168.0.2 - Hello World 5"
