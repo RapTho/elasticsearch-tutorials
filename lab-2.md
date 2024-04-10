@@ -395,7 +395,7 @@ POST /mylog-data-stream/\_doc
 Observe the underlying indices. The results might be different depending on how long you waited between posting data.
 
 ```
-_cat/indices/.ds-mylog*?v
+GET _cat/indices/.ds-mylog*?v
 ```
 
 You can also display its settings and mappings
