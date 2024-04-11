@@ -326,7 +326,7 @@ PUT /custom-analyzer-index
 }
 ```
 
-Test the analyzer by calling `\_analyze` on the index context.
+Test the analyzer by calling `_analyze` on the index context.
 
 ```
 GET /custom-analyzer-index/_analyze
