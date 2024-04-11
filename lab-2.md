@@ -38,33 +38,16 @@ Lets add a new index with some data to dive deeper into shards. First, lets crea
 PUT /books
 ```
 
-Add some documents to the new index
+Add some documents to the new index using the `_bulk` API
 
 ```
-PUT /books/_doc/1
-{
-  "id": 1,
-  "title": "The Hobbit",
-  "author": "J.R.R. Tolkien",
-  "genre": "Fantasy",
-  "year": 1937
-}
-PUT /books/_doc/2
-{
-  "id": 2,
-  "title": "To Kill a Mockingbird",
-  "author": "Harper Lee",
-  "genre": "Classics",
-  "year": 1960
-}
-PUT /books/_doc/3
-{
-  "id": 3,
-  "title": "The Catcher in the Rye",
-  "author": "J.D. Salinger",
-  "genre": "Classics",
-  "year": 1951
-}
+POST /books/_bulk
+{"index": { "_id": 1}}
+{"id": 1, "title": "The Hobbit", "author": "J.R.R. Tolkien", "genre": "Fantasy", "year": 1937}
+{"index": { "_id": 2}}
+{"id": 2, "title": "To Kill a Mockingbird", "author": "Harper Lee", "genre": "Classics", "year": 1960}
+{"index": { "_id": 3}}
+{"id": 3, "title": "The Catcher in the Rye", "author": "J.D. Salinger", "genre": "Classics", "year": 1951}
 ```
 
 Lets check if all books were added.
@@ -368,26 +351,15 @@ POST /mylog-data-stream/_doc
 Lets add more data
 
 ```
-POST /mylog-data-stream/_doc
-{
-  "@timestamp": "2023-04-24T17:02:15.000Z",
-  "message": "192.168.0.2 - Hello World 2"
-}
-POST /mylog-data-stream/_doc
-{
-  "@timestamp": "2023-04-24T17:03:15.000Z",
-  "message": "192.168.0.2 - Hello World 3"
-}
-POST /mylog-data-stream/_doc
-{
-  "@timestamp": "2023-04-24T17:04:15.000Z",
-  "message": "192.168.0.2 - Hello World 4"
-}
-POST /mylog-data-stream/_doc
-{
-  "@timestamp": "2023-04-24T17:05:15.000Z",
-  "message": "192.168.0.2 - Hello World 5"
-}
+POST /mylog-data-stream/_bulk
+{ "index": {} }
+{ "@timestamp": "2023-04-24T17:02:15.000Z", "message": "192.168.0.2 - Hello World 2"}
+{ "index": {} }
+{ "@timestamp": "2023-04-24T17:03:15.000Z", "message": "192.168.0.2 - Hello World 3"}
+{ "index": {} }
+{ "@timestamp": "2023-04-24T17:04:15.000Z", "message": "192.168.0.2 - Hello World 4"}
+{ "index": {} }
+{ "@timestamp": "2023-04-24T17:05:15.000Z", "message": "192.168.0.2 - Hello World 5"}
 ```
 
 Observe the underlying indices. The results might be different depending on how long you waited between posting data.
