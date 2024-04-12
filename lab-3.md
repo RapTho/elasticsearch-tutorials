@@ -113,7 +113,7 @@ GET /books4/_search
 }
 ```
 
-We will see later how to fix this issue with `nested` data. For now, lets play around with updates. First, add a new book to the index.
+In [lab 4](./lab-4.md) we will learn how to fix this issue with `nested` data. For now, lets play around with updates. First, add a new book to the index.
 
 ```
 PUT /books4/_doc/5
