@@ -95,7 +95,7 @@ And how about the follwoing one with a new field?
 { "Name": "Kids' Adventure 20", "NEW": "FIELD", "Price": 250.00, "Production Date": "2024-04-20T00:00:00Z", "Available": true, "Category": "Kids' Bikes", "Parts": ["training wheels", "child-friendly grips", "colorful frame"] }
 ```
 
-4. Find all bicycles matching the following criteria. There should only be **3**
+4. Find all bicycles matching the following criteria. There should only be **2**
 
 - Availability = true
 - Category = Road Bikes
