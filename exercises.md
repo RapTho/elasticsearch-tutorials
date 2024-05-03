@@ -80,6 +80,7 @@ Now it's your turn to use what you practiced before. Can you solve all the chall
 { "Name": "Rapid Racer 5000", "Price": 1100.00, "Production Date": "2024-04-19T00:00:00Z", "Available": true, "Category": "Road Bikes", "Parts": ["carbon fiber frame", "aero wheels", "performance brakes"] }
 { "index" : { "_index" : "bicycle_products", "_id" : "20" } }
 { "Name": "Kids' Adventure 20", "Price": 250.00, "Production Date": "2024-04-20T00:00:00Z", "Available": true, "Category": "Kids' Bikes", "Parts": ["training wheels", "child-friendly grips", "colorful frame"] }
+
 ```
 
 2. Make sure no other fields are allowed by trying to index the following non-compliant document
