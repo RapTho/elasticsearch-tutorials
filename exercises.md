@@ -83,7 +83,7 @@ Now it's your turn to use what you practiced before. Can you solve all the chall
 
 ```
 
-2. Make sure no other fields are allowed by trying to index the following non-compliant document
+3. Make sure no other fields are allowed by trying to index the following non-compliant document
 
 ```
 { "Name": "Racer Bicicletta", "Price": 1.00, "Production Date": "Fake Date", "Available": "maybe", "Category": 200, "Parts": true }
@@ -95,7 +95,7 @@ And how about the follwoing one with a new field?
 { "Name": "Kids' Adventure 20", "NEW": "FIELD", "Price": 250.00, "Production Date": "2024-04-20T00:00:00Z", "Available": true, "Category": "Kids' Bikes", "Parts": ["training wheels", "child-friendly grips", "colorful frame"] }
 ```
 
-3. Find all bicycles matching the following criteria. There should only be **3**
+4. Find all bicycles matching the following criteria. There should only be **3**
 
 - Availability = true
 - Category = Road Bikes
