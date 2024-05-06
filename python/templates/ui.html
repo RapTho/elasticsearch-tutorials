@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple User Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Sets the font for the page */
+            background-color: #f4f4f4; /* Light grey background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+        }
+        .container {
+            text-align: left; /* Aligns text to the right */
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+            width: 40vw; /* Container width as 45% of the viewport width */
+        }
+        input[type="text"], button {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 20vw; /* Input field width as 20% of the viewport width */
+        }
+        button {
+            cursor: pointer;
+            background-color: #0056b3;
+            color: white;
+            width: auto; /* Auto width for the button */
+        }
+        button:hover {
+            background-color: #004494;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Which bicycle category are you interested in?</h1>
+        <form method="post">
+            <input type="text" name="category" placeholder="Which bicycle category do you want to aggregate?">
+            <button type="submit">Submit</button>
+        </form>
+        {% if number is not none %}
+        <h2>There are {{ number }} available bikes of the category {{ category }}</h2>
+        {% endif %}
+    </div>
+</body>
+</html>

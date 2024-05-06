@@ -9,6 +9,10 @@ Tutorials to learn the basics of Elasticsearch
 - [Lab 3: Mapping, Indexing and Text Analysis](/lab-3.md)
 - [Lab 4: Search and Aggregation](/lab-4.md)
 
-### Original author
+## Exercises
+
+- [Exercises: practice your skills hands-on](/exercises.md)
+
+### Original author of the labs
 
 Max Simon - Max.Simon1@ibm.com
