@@ -114,34 +114,40 @@ You might want to check out [bool](https://www.elastic.co/guide/en/elasticsearch
 1. Setup a new Pyhton project and get familiar with the [requests](https://pypi.org/project/requests/) library.
 2. Send a query to get the cluster health and print the response
 
-### Exercise 4: Bucket and Metric Aggregations via Python
+### Exercise 4: Use template Python app to interact with Elasticsearch
 
-**Objective:** Utilize Elasticsearch's aggregation framework to summarize data.
+**Objective:** Learn how to use Python in combination with Elasticsearch.
 
-#### Task:
+#### Tasks:
 
-Write a Python script that uses the `bicycle_products` index of the previous exercise to produce the following output:
+**OPTIONAL:** Use [virtual environments](https://virtualenv.pypa.io/en/latest/user_guide.html)
+
+1. Write a Python script that uses the `bicycle_products` index of the previous exercise to produce the following output:
 
 ```
 The most expensive bike costs VARIABLE_MAX_PRICE, while the cheapest bike costs VARIABLE_MIN_PRICE. There are VARIABLE_NUMBER_OF_ROAD_BIKES road bikes available.
 ```
 
-While:
+Variables description:
 
 - VARIABLE_MAX_PRICE is the resulting value of a metric aggregation querying the most expensive bike. The value should be **1400**
 - VARIABLE_MIN_PRICE is the resulting value of a metric aggregation querying the cheapest bike. The value shoudl be **250**
 - VARIABLE_NUMBER_OF_ROAD_BIKES is the resulting value of a combination of query on the `Available` field and bucket aggregation over `Category`. You will then display the value for the bucket `Road Bikes`. The value should be **3**
+  <br>
+  <br>
 
-### Exercise 5: Crawl the web
+2. Use the [Python sample app](./python/) and send all the logs it produces to a new Elasticsearch index
+
+3. Continue working on the Python app and update it so it correctly queries Elasticsearch and returns the result in the user interface.
+
+### Exercise 6: Crawl the web
 
 **Objective:** Learn how to crawl websites
 
 #### Task:
 
 Use Elasticsearch's [Web Crawler](https://www.elastic.co/web-crawler) to gather data from the [https://hslu.ch](https://hslu.ch) website.
-
 **HINT:** You find the Web Crawler in Kibana under Search -> Content
-
 Ignore the listed jobs by adding a [disallow policy](https://www.elastic.co/guide/en/enterprise-search/current/crawler-managing.html#crawler-managing-crawl-rules) for everything that contains:
 
 ```
@@ -150,7 +156,7 @@ Ignore the listed jobs by adding a [disallow policy](https://www.elastic.co/guid
 
 You should get about **23'500 documents**
 
-### Exercise 6: Use Kibana to discover the data
+### Exercise 7: Use Kibana to discover the data
 
 **Objective:** Browse through the data using Kibana's Discover functionality
 
