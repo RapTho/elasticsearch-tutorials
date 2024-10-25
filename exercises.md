@@ -140,7 +140,7 @@ Variables description:
 
 3. Continue working on the Python app and update it so it correctly queries Elasticsearch and returns the result in the user interface.
 
-### Exercise 6: Crawl the web
+### Exercise 5: Crawl the web
 
 **Objective:** Learn how to crawl websites
 
@@ -156,7 +156,7 @@ Ignore the listed jobs by adding a [disallow policy](https://www.elastic.co/guid
 
 You should get about **23'500 documents**
 
-### Exercise 7: Use Kibana to discover the data
+### Exercise 6: Use Kibana to discover the data
 
 **Objective:** Browse through the data using Kibana's Discover functionality
 
