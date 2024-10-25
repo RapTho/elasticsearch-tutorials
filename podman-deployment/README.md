@@ -34,7 +34,7 @@ Open a browser and visit [http://localhost:5601](http://localhost:5601)
 
 #### Sneaky way
 
-Set `bootstrap.memory_lock=false` in your [docker-compose.yml](./docker-compose.yml) file to skip bootstrap checks. This is of course you'd do in production!
+Set `bootstrap.memory_lock=false` in your [docker-compose.yml](./docker-compose.yml) file to skip this bootstrap checks. This is of course you'd do in production!
 
 ```bash
 bootstrap.memory_lock=false
