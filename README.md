@@ -12,7 +12,3 @@ Tutorials to learn the basics of Elasticsearch
 ## Exercises
 
 - [Exercises: practice your skills hands-on](/exercises.md)
-
-### Original author of the labs
-
-Max Simon - Max.Simon1@ibm.com
