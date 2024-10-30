@@ -14,17 +14,17 @@ Instead of dealing with JSON format we can get a readable table format using the
 GET /_cat/nodes?v
 ```
 
-- Q: What are the assigned roles?
+- Q: What are the assigned [roles](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles)?
 - Q: What is the purpose of a dedicated tiebreaker node?
 - A: read about [resiliency considerations in small clusters](https://www.elastic.co/guide/en/elasticsearch/reference/current/high-availability-cluster-small-clusters.html#high-availability-cluster-design-two-nodes-plus)
 
-Get an overview on available indices.
+Get an overview of the available indices.
 
 ```
 GET /_cat/indices?v
 ```
 
-Get an overview of deployed shards.
+Get an overview of the deployed shards. [This page](https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-shards.html#cat-shards-query-params) tells you what each of the columns mean.
 
 ```
 GET /_cat/shards?v
@@ -32,7 +32,7 @@ GET /_cat/shards?v
 
 ## Indices
 
-Lets add a new index with some data to dive deeper into shards. First, lets create a new index `books`
+Let's add a new index with some data to dive deeper into shards. First, let's create a new index called `books`
 
 ```
 PUT /books
@@ -50,7 +50,7 @@ POST /books/_bulk
 {"id": 3, "title": "The Catcher in the Rye", "author": "J.D. Salinger", "genre": "Classics", "year": 1951}
 ```
 
-Lets check if all books were added.
+Let's check if all books were added.
 
 ```
 GET /books/_search
@@ -61,13 +61,13 @@ GET /books/_search
 }
 ```
 
-Retrieve some details on the new index. Adding `books` to the path filters all indices for `books`
+Retrieve some details of the new index. Adding `books` to the path allows us to retrieve data related to our `books` index only.
 
 ```
 GET /_cat/indices/books?v
 ```
 
-Inspect the newly created shards. Adding `books` to the path filters all shards for the `books` index
+Inspect the newly created shards. Adding `books` to the path retrieves only the shards belonging to the `books` index.
 
 ```
 GET /_cat/shards/books?v
@@ -75,7 +75,7 @@ GET /_cat/shards/books?v
 
 ### Replication
 
-Lets increase the number of replicas. It's a setting of the index so we need to update the index settings.
+Let's increase the number of replicas. It's a setting of the index so we need to update the index settings.
 
 ```
 PUT /books/_settings
@@ -86,7 +86,7 @@ PUT /books/_settings
 }
 ```
 
-Lets check if the new replicas were deployed.
+Let's check if the new replicas were deployed.
 
 ```
 GET /_cat/shards/books?v
@@ -153,9 +153,9 @@ GET /_cat/shards/books2?v
 
 ### Aliases
 
-Another approach is to combine multiple indices, so new shards can be added, is by adding new indices to an [alias](https://www.elastic.co/guide/en/elasticsearch/reference/current/aliases.html).
+Another approach to increase the number of shards is to combine multiple indices by using an [alias](https://www.elastic.co/guide/en/elasticsearch/reference/current/aliases.html).
 
-Lets try it out. First we create a new index `books3`...
+Let's try it out. First we create a new index called `books3`...
 
 ```
 PUT /books3
@@ -210,7 +210,7 @@ Do we see the alias as an index?
 GET /_cat/indices
 ```
 
-No, however, we can retrieve it by querying aliases.
+No, but we can retrieve a list of aliases.
 
 ```
 GET /_cat/aliases?v
@@ -235,7 +235,7 @@ GET /booksa/_search
 
 ### Data Streams
 
-The alias approach is suitable for a continous data flow, but managing the underlying indices can be cumbersome. [Datastreams](https://www.elastic.co/guide/en/elasticsearch/reference/current/data-streams.html) take the same approach but make the management of underlying indices much easier by integrating with the Index Lifecycle Manager (ILM). They are commonly used for logs, observability metrics and other time-series data.
+The alias approach is suitable for a continous data flow, but managing the underlying indices can be cumbersome. [Datastreams](https://www.elastic.co/guide/en/elasticsearch/reference/current/data-streams.html) take the same approach but make the management of underlying indices much easier by integrating with the Index Lifecycle Manager (ILM). Data streams are commonly used for logs, observability metrics and other time-series data.
 
 First of all, we increase the interval of the ILM. For a production setup several minutes should be enough!
 
@@ -248,7 +248,7 @@ PUT _cluster/settings
 }
 ```
 
-Lets add a new lifecycle policy within the ILM. For this you need to specify the minimum age and actions for the different lifecycle phases `hot`, `warm`, `cold` and `frozen`.
+Let's add a new lifecycle policy within the ILM. For this you need to specify the minimum age and actions for the different [lifecycle phases](https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-index-lifecycle.html) `hot`, `warm`, `cold` and `frozen`.
 
 ```
 PUT _ilm/policy/mylog-lifecycle-policy
@@ -334,7 +334,7 @@ PUT _index_template/mylog-index-template
 }
 ```
 
-Thats it. We can now start adding data!
+That's it. We can now start adding data!
 
 ### Adding data
 
@@ -348,7 +348,7 @@ POST /mylog-data-stream/_doc
 }
 ```
 
-Lets add more data
+Let's add more data
 
 ```
 POST /mylog-data-stream/_bulk
