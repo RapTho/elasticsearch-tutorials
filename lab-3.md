@@ -52,7 +52,7 @@ Once more, check the mapping. Note, that the new field appears in the mapping as
 GET /books4/_mapping
 ```
 
-Lets see what happens to nested data
+Let's see what happens to nested data
 
 ```
 POST /books4/_doc
@@ -113,7 +113,7 @@ GET /books4/_search
 }
 ```
 
-In [lab 4](./lab-4.md) we will learn how to fix this issue with `nested` data. For now, lets play around with updates. First, add a new book to the index.
+In [lab 4](./lab-4.md) we will learn how to fix this issue with `nested` data. For now, let's play around with updates. First, add a new book to the index.
 
 ```
 PUT /books4/_doc/5
@@ -128,7 +128,7 @@ PUT /books4/_doc/5
 Now try to update the popularity
 
 ```
-POST /books4/_doc/5
+PUT /books4/_doc/5
 {
   "popularity": 1.1
 }
@@ -158,7 +158,7 @@ Check the result
 GET /books4/_doc/5
 ```
 
-Now the partial update worked as expected. Lets try a scripted update. Instead of pushing field data to Elasticsearch, we provide a script which updates the value. The following call increases the popularity by 1
+Now the partial update worked as expected. Let's try a scripted update. Instead of pushing field data to Elasticsearch, we provide a script which updates the value. The following call increases the popularity by 1.
 
 ```
 POST /books4/_update/5
@@ -181,7 +181,7 @@ POST /books4/_update_by_query
     }
   },
   "script": {
-    "source": "ctx._source.title += ' by '+ctx._source.author"
+    "source": "ctx._source.title += ' by '+ ctx._source.author"
   }
 }
 ```
@@ -192,7 +192,7 @@ Get all books to verify your changes.
 GET /books4/_search
 ```
 
-Now create an index with explicit mapping. To enforce a data schema we set `"dynamic": "strict"`. Otherwise, explicit mapping still allows dynamic mapping.
+Now create an index with explicit mapping. To enforce a data schema we set `"dynamic": "strict"`. Otherwise, explicit mappings still allow dynamic mapping.
 
 ```
 PUT /myusers
@@ -251,7 +251,7 @@ GET /myusers/_search
 
 ### Text analysis
 
-Lets look into text analyzers in Elasticsearch. You can test different analyzers using the [\_analyze API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-analyze.html).
+Let's look into text analyzers in Elasticsearch. You can test different analyzers using the [\_analyze API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-analyze.html).
 
 ```
 GET /_analyze
