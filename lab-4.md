@@ -52,7 +52,7 @@ GET /recipes/_search
 }
 ```
 
-Actually, there is one more recipe which talks about `chicken`. Let's also include `instructions` in our search query.
+Actually, there is one more recipe which contains `chicken`. Let's also include `instructions` in our search query.
 
 ```
 GET /recipes/_search
@@ -68,7 +68,7 @@ GET /recipes/_search
 }
 ```
 
-Not everyone can spell `Enchiladas`. Fuzziness respects spelling errors in your search string. How wrong can you spell `Enchiladas` before it is not recognized anymore?
+Not everyone can spell `Enchiladas` correctly. Fuzziness respects spelling errors in your search string. How wrong can you spell `Enchiladas` before it is not recognized anymore?
 
 ```
 GET /recipes/_search
