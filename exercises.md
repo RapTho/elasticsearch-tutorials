@@ -16,11 +16,11 @@ Now it's your turn to use what you practiced before. Can you solve all the chall
 
 2. **Create an API Key:**
 
-   - [Generate an API key](https://www.elastic.co/guide/en/kibana/8.13/api-keys.html) using the Kibana console or API.
+   - [Generate an API key](https://www.elastic.co/guide/en/kibana/8.15/api-keys.html) using the Kibana console or API.
    - Securely save the API key for future use.
 
 3. **Validation:**
-   - Validate the API key by making a simple API call using a `curl` to list indexes or get cluster health.
+   - Validate the API key by making a simple API call using a `curl` to list indexes or get cluster health. Check [how to authenticate](https://www.elastic.co/guide/en/elasticsearch/reference/current/http-clients.html) towards the Elasticsearch API using API Keys.
 
 ### Exercise 2: Using curl to interact with the Elasticsearch API
 
@@ -28,7 +28,7 @@ Now it's your turn to use what you practiced before. Can you solve all the chall
 
 #### Tasks:
 
-1. Create a new index with an explicit mapping that satisfies the following field / type criteria:
+1. Create a new index called `bicycle_products` with an explicit mapping that satisfies the following field / type criteria:
 
 - Name = text
 - Price = float
