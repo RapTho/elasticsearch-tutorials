@@ -1,17 +1,12 @@
 # Deploy Elasticsearch + Kibana using Podman Compose
 
-## Install podman and podman compose
+## Install podman
 
-Podman is like Docker but it doesn't require root privileges ;)<br>
+[Podman](https://podman.io) is like Docker but it doesn't require root privileges ;)<br>
 
-If you want, you can later set an alias to run docker commands, which will actually be executed by podman. that's how similar the two are
+Install podman desktop: [https://podman-desktop.io/](https://podman-desktop.io/)<br>
 
-```bash
-alias docker=podman
-```
-
-Install podman: [https://podman.io/docs/installation](https://podman.io/docs/installation)<br>
-Install podman compose: [https://github.com/containers/podman-compose?tab=readme-ov-file#installation](https://github.com/containers/podman-compose?tab=readme-ov-file#installation)
+Make sure [compose is setup](https://podman-desktop.io/docs/compose/setting-up-compose) and [Docker compatibility is enabled](https://podman-desktop.io/docs/migrating-from-docker/managing-docker-compatibility).
 
 ## Deploy Elasticsearch + Kibana
 
