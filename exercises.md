@@ -146,7 +146,7 @@ Variables description:
 
 #### Task:
 
-Use Elasticsearch's [Web Crawler](https://www.elastic.co/web-crawler) to gather data from the [https://hslu.ch](https://hslu.ch) website.
+Use Elasticsearch's [Web Crawler](https://www.elastic.co/web-crawler) to gather data from the [https://www.hslu.ch](https://www.hslu.ch) website.
 **HINT:** You find the Web Crawler in Kibana under Search -> Content
 Ignore the listed jobs by adding a [disallow policy](https://www.elastic.co/guide/en/enterprise-search/current/crawler-managing.html#crawler-managing-crawl-rules) for everything that contains:
 
