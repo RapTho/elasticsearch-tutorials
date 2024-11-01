@@ -31,7 +31,7 @@ Your cluster might fail to start due to failing bootstrap checks. Find the follo
 
 #### Sneaky way
 
-Set `bootstrap.memory_lock=false` in your [docker-compose.yml](./docker-compose.yml) file to skip this bootstrap checks. This is of course you'd do in production!
+Set `bootstrap.memory_lock=false` in your [docker-compose.yml](./docker-compose.yml) file to skip this bootstrap checks. This is of course nothing you'd do in production!
 
 ```bash
 bootstrap.memory_lock=false
@@ -39,5 +39,5 @@ bootstrap.memory_lock=false
 
 #### Set required node settings
 
-In production you of course want to run the bootstrap checks to ensure your node is configured properly. Here you find the important settings that must be set:<br>
+In production you would want to run the bootstrap checks to ensure your node is configured properly. Here you find the important settings that must be set:<br>
 [https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html)
