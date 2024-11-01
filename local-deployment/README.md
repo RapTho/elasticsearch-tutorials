@@ -27,6 +27,8 @@ Open a browser and visit [http://localhost:5601](http://localhost:5601)
 
 ### Troubleshoot
 
+Your cluster might fail to start due to failing bootstrap checks. Find the following workarounds below.
+
 #### Sneaky way
 
 Set `bootstrap.memory_lock=false` in your [docker-compose.yml](./docker-compose.yml) file to skip this bootstrap checks. This is of course you'd do in production!
