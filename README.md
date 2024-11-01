@@ -17,4 +17,4 @@ Tutorials to learn the basics of Elasticsearch
 
 To deploy Elasticsearch and its user interface Kibana locally, you can use [podman](https://podman.io/). Podman is like docker but doesn't require root provileges.
 
-Check out the instructions around [local deployment](./podman-deployment/README.md).
+Check out the instructions around [local deployment](./local-deployment).
