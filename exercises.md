@@ -154,7 +154,7 @@ Ignore the listed jobs by adding a [disallow policy](https://www.elastic.co/guid
 /hochschule-luzern/ueber-uns/jobs-und-karriere/
 ```
 
-You should get about **23'500 documents**
+You should get **10'000+ documents**
 
 ### Exercise 6: Use Kibana to discover the data
 
