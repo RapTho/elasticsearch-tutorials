@@ -168,7 +168,7 @@ POST /books4/_update/5
 GET /books4/_doc/5
 ```
 
-We can also update multiple documents with one request using the [\_update_with_query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update-by-query.html). The following request adds the author name to the title field for all books that were published after 1900.
+We can also update multiple documents with one request using the [\_update_by_query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update-by-query.html). The following request adds the author name to the title field for all books that were published after 1900.
 
 ```
 POST /books4/_update_by_query
