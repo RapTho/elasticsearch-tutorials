@@ -37,7 +37,7 @@ Now it's your turn to use what you practiced before. Can you solve all the chall
 - Category = keyword
 - Parts = Array of text
 
-2. Add data to the newly created index using `curl`. Use the sample data below in a bulk request.
+2. Add data to the newly created index using `curl`. Use the sample data below in a [bulk request](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html).
 
 ```
 { "index" : { "_index" : "bicycle_products", "_id" : "1" } }
