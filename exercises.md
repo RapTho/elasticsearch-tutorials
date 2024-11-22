@@ -83,13 +83,13 @@ Now it's your turn to use what you practiced before. Can you solve all the chall
 
 ```
 
-3. Make sure no other fields are allowed by trying to index the following non-compliant document
+3. Make sure the correct data type of each field is enforced by trying to index the following non-compliant document
 
 ```
 { "Name": "Racer Bicicletta", "Price": 1.00, "Production Date": "Fake Date", "Available": "maybe", "Category": 200, "Parts": true }
 ```
 
-And how about the follwoing one with a new field?
+And how about the following one with a new field?
 
 ```
 { "Name": "Kids' Adventure 20", "NEW": "FIELD", "Price": 250.00, "Production Date": "2024-04-20T00:00:00Z", "Available": true, "Category": "Kids' Bikes", "Parts": ["training wheels", "child-friendly grips", "colorful frame"] }
