@@ -30,6 +30,9 @@ Now it's your turn to use what you practiced before. Can you solve all the chall
 
 1. Create a new index called `bicycle_products` with an explicit mapping that satisfies the following field / type criteria:
 
+**Windows user only**:
+If you face issues with your `curl` requests, check the [troubleshooting section](#troubleshooting-curl-on-windows)
+
 - Name = text
 - Price = float
 - Production Date = date of format `strict_date_optional_time` or `epoch_millis`
@@ -166,3 +169,28 @@ You should get **10'000+ documents**
 2. Look for data that contains `renewable` in the title field.
 3. Open one of the documents and look at the document's structure
 4. Now let's imagine you're a lonely guy and need to use Kibana to search for parties at your campus. Filter by `url_path_dir3` = `campus`and `body_content` = `Party`. Are there any?
+
+### Troubleshooting curl on Windows
+
+`curl` on Windows parses JSON data differently than on MacOS or Linux. Thus, there might be issues with the body section of your requests. If you receive an error related to `Compressor detection can only be called on some xcontent bytes` you can do the following.<br>
+
+1. Extract the body section of your request in to a file e.g. `data.json`
+2. Reference this file in your curl request with the `-d @data.json` flag
+
+```
+curl -X PUT -H "Content-Type: application/json" -H "Authorization: ApiKey ..." -d @data.json "https://...cloud.es.io:443/myindex"
+```
+
+The data.json file could then look like the following
+
+```json
+{
+  "mappings": {
+    "properties": {
+      "Name": {
+        "type": "text"
+      }
+    }
+  }
+}
+```
