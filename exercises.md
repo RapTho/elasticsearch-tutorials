@@ -174,7 +174,7 @@ You should get **10'000+ documents**
 
 `curl` on Windows parses JSON data differently than on MacOS or Linux. Thus, there might be issues with the body section of your requests. If you receive an error related to `Compressor detection can only be called on some xcontent bytes` you can do the following.<br>
 
-1. Extract the body section of your request in to a file e.g. `data.json`
+1. Extract the body section of your request into a file e.g. `data.json`
 2. Reference this file in your curl request with the `-d @data.json` flag
 
 ```
