@@ -1,0 +1,22 @@
+---
+# Elasticsearch connection details
+elasticsearch_host: "9b2f2597-d597-4855-83f2-082106718313.659dc287bad647f9b4fe17c4e4c38dcc.databases.appdomain.cloud"
+elasticsearch_port: 32321
+elasticsearch_protocol: "https"
+elasticsearch_admin_user: "ibm_cloud_217c08d9_3c8f_464f_853f_e062e369bf3d"
+elasticsearch_admin_password: "{{ lookup('env', 'ES_ADMIN_PASSWORD') }}"
+
+# Number of users to create
+kibana_users_count: 20
+
+# Base username prefix (users will be named: kibana_user1, kibana_user2, etc.)
+kibana_user_prefix: "kibana_user"
+
+# Default password for created users (should be changed on first login)
+kibana_user_default_password: "ChangeMe123!"
+
+# Role name for the users
+kibana_user_role_name: "kibana_developer"
+
+# Verify SSL certificates
+validate_certs: false

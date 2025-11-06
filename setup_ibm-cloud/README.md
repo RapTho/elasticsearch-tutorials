@@ -52,3 +52,11 @@ Add the `resource_group` key-value pair in the terraform.tfvars file
 Then `terraform plan` and `terraform apply` as described
 
 ## Add users to Kibana
+
+### Optional: Create virtual environment
+
+```bash
+python3 -m venv ansible-env
+source ansible-env/bin/activate  # On Windows: ansible-env\Scripts\activate
+pip install ansible
+```
