@@ -1,0 +1,7 @@
+---
+- name: Cleanup Kibana users and roles from Elasticsearch
+  hosts: localhost
+  gather_facts: no
+
+  roles:
+    - kibana-users-cleanup

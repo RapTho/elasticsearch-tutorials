@@ -1,0 +1,88 @@
+---
+- name: Get list of all users with the specified prefix
+  uri:
+    url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/user"
+    method: GET
+    user: "{{ elasticsearch_admin_user }}"
+    password: "{{ elasticsearch_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: "{{ validate_certs }}"
+    status_code: [200]
+  register: all_users
+
+- name: Filter users with the specified prefix
+  set_fact:
+    users_to_delete: "{{ all_users.json.keys() | select('match', '^' ~ kibana_user_prefix) | list }}"
+
+- name: Display users to be deleted
+  debug:
+    msg: "Found {{ users_to_delete | length }} user(s) to delete: {{ users_to_delete | join(', ') }}"
+
+- name: Confirm deletion
+  pause:
+    prompt: "Are you sure you want to delete {{ users_to_delete | length }} user(s)? Press Enter to continue or Ctrl+C to abort"
+  when:
+    - users_to_delete | length > 0
+    - confirm_deletion | default(true) | bool
+
+- name: Delete Kibana users
+  uri:
+    url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/user/{{ item }}"
+    method: DELETE
+    user: "{{ elasticsearch_admin_user }}"
+    password: "{{ elasticsearch_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: "{{ validate_certs }}"
+    status_code: [200, 404]
+  loop: "{{ users_to_delete }}"
+  register: user_deletion
+  when: users_to_delete | length > 0
+
+- name: Display deleted users
+  debug:
+    msg: "Deleted user: {{ item.item }}"
+  loop: "{{ user_deletion.results }}"
+  when:
+    - user_deletion.results is defined
+    - item.status == 200
+
+- name: Check if custom role exists
+  uri:
+    url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/role/{{ kibana_user_role_name }}"
+    method: GET
+    user: "{{ elasticsearch_admin_user }}"
+    password: "{{ elasticsearch_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: "{{ validate_certs }}"
+    status_code: [200, 404]
+  register: role_check
+  failed_when: false
+
+- name: Delete custom Kibana developer role
+  uri:
+    url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/role/{{ kibana_user_role_name }}"
+    method: DELETE
+    user: "{{ elasticsearch_admin_user }}"
+    password: "{{ elasticsearch_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: "{{ validate_certs }}"
+    status_code: [200, 404]
+  register: role_deletion
+  when: role_check.status == 200
+
+- name: Display role deletion result
+  debug:
+    msg: "Role {{ kibana_user_role_name }} deleted successfully"
+  when:
+    - role_deletion is defined
+    - role_deletion.status == 200
+
+- name: Cleanup summary
+  debug:
+    msg:
+      - "=========================================="
+      - "Kibana Users Cleanup Summary"
+      - "=========================================="
+      - "Users deleted: {{ users_to_delete | length }}"
+      - "Role deleted: {{ 'Yes' if (role_deletion is defined and role_deletion.status == 200) else 'No (not found or not deleted)' }}"
+      - "=========================================="

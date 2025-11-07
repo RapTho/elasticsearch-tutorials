@@ -1,10 +1,4 @@
 ---
-# Example playbook for IBM Cloud Elasticsearch
-# Edit the variables in the role's default folder
-# Usage:
-#   export ES_ADMIN_PASSWORD="your-password"
-#   ansible-playbook playbook.yml
-
 - name: Create Kibana users
   hosts: localhost
   gather_facts: false

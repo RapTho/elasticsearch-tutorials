@@ -1,0 +1,7 @@
+---
+- name: Create Kibana users
+  hosts: localhost
+  gather_facts: false
+
+  roles:
+    - ansible-roles/kibana-users-cleanup

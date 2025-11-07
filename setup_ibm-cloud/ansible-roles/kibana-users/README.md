@@ -1,6 +1,13 @@
 # Kibana Users Ansible Role
 
-This Ansible role creates multiple Kibana users with developer permissions for Elasticsearch and Kibana. The users can create indices, use the Dev Tools UI, and access Elasticsearch cluster health metrics.
+This Ansible role creates multiple Kibana users with developer permissions for Elasticsearch and Kibana. The users can create indices, use the Dev Tools UI, access Elasticsearch cluster health metrics, and use Kibana's Enterprise Search Web Crawler.
+
+## Features
+
+- **Web Crawler Support**: Users have full access to Kibana's Enterprise Search and Web Crawler features
+- **Smart Updates**: Only updates existing users if their roles have changed, avoiding unnecessary modifications
+- **Idempotent**: Safe to run multiple times - skips users that already exist with correct roles
+- **Comprehensive Permissions**: Full access to Discover, Visualize, Dashboard, Dev Tools, and Enterprise Search
 
 ## Requirements
 
@@ -38,30 +45,3 @@ kibana_user_default_password: "ChangeMe123!"
 # Role name for the users
 kibana_user_role_name: "kibana_developer"
 ```
-
-### Security
-
-```yaml
-# Verify SSL certificates
-validate_certs: false
-```
-
-## Usage
-
-1. **Set the required variables** in your playbook or inventory:
-
-   - `elasticsearch_admin_password` (required)
-   - `elasticsearch_host` (if not localhost)
-   - `kibana_users_count` (customize the number of users)
-
-2. **Run the playbook**:
-
-   ```bash
-   ansible-playbook your-playbook.yml
-   ```
-
-3. **Created users** will follow the pattern:
-
-   - Usernames: `kibana_user1`, `kibana_user2`, ..., `kibana_userN`
-   - Default password: As specified in `kibana_user_default_password`
-   - Email: `kibana_user1@example.com`, etc.
