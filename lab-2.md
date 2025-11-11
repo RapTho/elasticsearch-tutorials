@@ -270,11 +270,6 @@ PUT _ilm/policy/mylog-lifecycle-policy
         "min_age": "60s",
         "actions": {}
       },
-      "frozen": {
-        "min_age": "90s",
-        "actions": {}
-        }
-      },
       "delete": {
         "min_age": "120s",
         "actions": {
