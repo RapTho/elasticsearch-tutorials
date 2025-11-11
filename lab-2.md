@@ -323,7 +323,7 @@ PUT _component_template/mylog-settings
 }
 ```
 
-Finally, we combine the two component tempaltes to create a new [index template](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html). Note that `index_patterns` defines the future data stream naming pattern.
+Finally, we combine the two component templates to create a new [index template](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html). Note that `index_patterns` defines the future data stream naming pattern.
 
 ```
 PUT _index_template/mylog-index-template
