@@ -272,10 +272,7 @@ PUT _ilm/policy/mylog-lifecycle-policy
       },
       "frozen": {
         "min_age": "90s",
-        "actions": {
-          "searchable_snapshot": {
-            "snapshot_repository": "found-snapshots"
-          }
+        "actions": {}
         }
       },
       "delete": {
