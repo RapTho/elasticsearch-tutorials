@@ -235,9 +235,9 @@ GET /booksa/_search
 
 ### Data Streams
 
-The alias approach is suitable for a continous data flow, but managing the underlying indices can be cumbersome. [Datastreams](https://www.elastic.co/guide/en/elasticsearch/reference/current/data-streams.html) take the same approach but make the management of underlying indices much easier by integrating with the Index Lifecycle Manager (ILM). Data streams are commonly used for logs, observability metrics and other time-series data.
+The alias approach is suitable for a continuous data flow, but managing the underlying indices can be cumbersome. [Data streams](https://www.elastic.co/guide/en/elasticsearch/reference/current/data-streams.html) take the same approach but make the management of underlying indices much easier by integrating with the Index Lifecycle Manager (ILM). Data streams are commonly used for logs, observability metrics and other time-series data.
 
-First of all, we increase the interval of the ILM. For a production setup several minutes should be enough!
+First, let's speed up the ILM polling interval for demonstration purposes.
 
 ```
 PUT _cluster/settings
@@ -248,30 +248,32 @@ PUT _cluster/settings
 }
 ```
 
-Let's add a new lifecycle policy within the ILM. For this you need to specify the minimum age and actions for the different [lifecycle phases](https://www.elastic.co/guide/en/elasticsearch/reference/current/ilm-index-lifecycle.html) `hot`, `warm`, `cold` and `frozen`.
+#### Create ILM Policy
+
+Let's create a comprehensive lifecycle policy that demonstrates all phases with actions available in the basic license:
 
 ```
-PUT _ilm/policy/mylog-lifecycle-policy
+PUT _ilm/policy/sensor-data-policy
 {
   "policy": {
     "phases": {
       "hot": {
         "actions": {
           "rollover": {
-            "max_docs": 2
+            "max_primary_shard_size": "50mb",
+            "max_age": "1d",
+            "max_docs": 5
           }
         }
       },
       "warm": {
         "min_age": "30s",
-        "actions": {}
-      },
-      "cold": {
-        "min_age": "60s",
-        "actions": {}
+        "actions": {
+          "readonly": {}
+        }
       },
       "delete": {
-        "min_age": "120s",
+        "min_age": "90s",
         "actions": {
           "delete": {}
         }
@@ -281,10 +283,18 @@ PUT _ilm/policy/mylog-lifecycle-policy
 }
 ```
 
-The ILM will dynamically create new indices which requires a template. We first create an index template for the mapping section to define the index's fields.
+**What each action does:**
+
+- `rollover`: Creates a new index when conditions are met (5 docs for demo, typically size/age in production)
+- `readonly`: Makes index read-only to prevent accidental writes
+- `delete`: Removes the index
+
+#### Create Component Templates
+
+Create a component template for mappings that defines our sensor data structure:
 
 ```
-PUT _component_template/mylog-mappings
+PUT _component_template/sensor-mappings
 {
   "template": {
     "mappings": {
@@ -293,8 +303,20 @@ PUT _component_template/mylog-mappings
           "type": "date",
           "format": "date_optional_time||epoch_millis"
         },
-        "message": {
-        "type": "wildcard"
+        "sensor_id": {
+          "type": "keyword"
+        },
+        "temperature": {
+          "type": "float"
+        },
+        "humidity": {
+          "type": "float"
+        },
+        "location": {
+          "type": "geo_point"
+        },
+        "status": {
+          "type": "keyword"
         }
       }
     }
@@ -302,79 +324,114 @@ PUT _component_template/mylog-mappings
 }
 ```
 
-In the index template's settings section we reference the previously created ILM policy
+Create a component template for settings that references our ILM policy:
 
 ```
-PUT _component_template/mylog-settings
+PUT _component_template/sensor-settings
 {
   "template": {
     "settings": {
-      "index.lifecycle.name": "mylog-lifecycle-policy"
+      "index.lifecycle.name": "sensor-data-policy",
+      "index.number_of_shards": 2,
+      "index.number_of_replicas": 1
     }
   }
 }
 ```
 
-Finally, we combine the two component templates to create a new [index template](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html). Note that `index_patterns` defines the future data stream naming pattern.
+#### Create Index Template
+
+Combine the component templates into an [index template](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html) for our data stream:
 
 ```
-PUT _index_template/mylog-index-template
+PUT _index_template/sensor-data-template
 {
-  "index_patterns": ["mylog-data-stream*"],
-  "data_stream": { },
-  "composed_of": [ "mylog-mappings", "mylog-settings" ]
+  "index_patterns": ["sensor-data*"],
+  "data_stream": {},
+  "composed_of": ["sensor-mappings", "sensor-settings"],
+  "priority": 500
 }
 ```
 
-That's it. We can now start adding data!
+#### Add Data to the Data Stream
 
-### Adding data
-
-As no data stream exists yet, Elasticsearch will create the stream and the underlying index automatically. As the naming convention matches our `index_pattern`, our previously created index template will be used.
+Now we can start ingesting data. The data stream and its first backing index will be created automatically:
 
 ```
-POST /mylog-data-stream/_doc
+POST /sensor-data/_doc
 {
-  "@timestamp": "2023-04-24T17:01:15.000Z",
-  "message": "192.168.0.2 - Hello World 1"
+  "@timestamp": "2024-01-15T10:00:00.000Z",
+  "sensor_id": "sensor-001",
+  "temperature": 22.5,
+  "humidity": 45.2,
+  "location": {
+    "lat": 40.7128,
+    "lon": -74.0060
+  },
+  "status": "active"
 }
 ```
 
-Let's add more data
+Add more sensor readings to trigger a rollover (we set max_docs to 5):
 
 ```
-POST /mylog-data-stream/_bulk
-{ "index": {} }
-{ "@timestamp": "2023-04-24T17:02:15.000Z", "message": "192.168.0.2 - Hello World 2"}
-{ "index": {} }
-{ "@timestamp": "2023-04-24T17:03:15.000Z", "message": "192.168.0.2 - Hello World 3"}
-{ "index": {} }
-{ "@timestamp": "2023-04-24T17:04:15.000Z", "message": "192.168.0.2 - Hello World 4"}
-{ "index": {} }
-{ "@timestamp": "2023-04-24T17:05:15.000Z", "message": "192.168.0.2 - Hello World 5"}
+POST /sensor-data/_bulk
+{ "create": {} }
+{ "@timestamp": "2024-01-15T10:05:00.000Z", "sensor_id": "sensor-001", "temperature": 22.8, "humidity": 44.8, "location": {"lat": 40.7128, "lon": -74.0060}, "status": "active"}
+{ "create": {} }
+{ "@timestamp": "2024-01-15T10:10:00.000Z", "sensor_id": "sensor-002", "temperature": 21.3, "humidity": 48.5, "location": {"lat": 40.7589, "lon": -73.9851}, "status": "active"}
+{ "create": {} }
+{ "@timestamp": "2024-01-15T10:15:00.000Z", "sensor_id": "sensor-003", "temperature": 23.1, "humidity": 43.2, "location": {"lat": 40.7614, "lon": -73.9776}, "status": "active"}
+{ "create": {} }
+{ "@timestamp": "2024-01-15T10:20:00.000Z", "sensor_id": "sensor-001", "temperature": 23.5, "humidity": 42.9, "location": {"lat": 40.7128, "lon": -74.0060}, "status": "active"}
+{ "create": {} }
+{ "@timestamp": "2024-01-15T10:25:00.000Z", "sensor_id": "sensor-002", "temperature": 21.8, "humidity": 47.3, "location": {"lat": 40.7589, "lon": -73.9851}, "status": "active"}
 ```
 
-Observe the underlying indices. The results might be different depending on how long you waited between posting data.
+#### Monitor the Data Stream
+
+View the data stream information:
 
 ```
-GET _cat/indices/.ds-mylog*?v
+GET _data_stream/sensor-data
 ```
 
-You can also display its settings and mappings
+#### Observe ILM Phase Transitions
+
+Wait about 30 seconds and check the ILM status to see indices moving to the warm phase:
 
 ```
-GET .ds-mylog*/_settings
-GET .ds-mylog*/_mappings
+GET .ds-sensor-data*/_ilm/explain
 ```
+
+You should see:
+
+- Older indices in the **warm** phase (read-only)
+- The current write index in the **hot** phase
+- After 90 seconds, the oldest indices will be deleted.
 
 ## Clean up
 
-Undo what we did in this lab
+Undo what we did in this lab:
 
 ```
-DELETE books*
-DELETE _data_stream/mylog-data-stream
-DELETE _index_template/mylog-index-template
-DELETE _component_template/mylog*
-DELETE _ilm/policy/mylog-lifecycle-policy
+DELETE books
+DELETE books2
+DELETE books3
+DELETE _data_stream/sensor-data
+DELETE _index_template/sensor-data-template
+DELETE _component_template/sensor-mappings
+DELETE _component_template/sensor-settings
+DELETE _ilm/policy/sensor-data-policy
+```
+
+Reset the ILM polling interval to default:
+
+```
+PUT _cluster/settings
+{
+  "transient": {
+    "indices.lifecycle.poll_interval": null
+  }
+}
 ```
