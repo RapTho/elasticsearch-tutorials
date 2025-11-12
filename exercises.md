@@ -143,23 +143,7 @@ Variables description:
 
 3. Continue working on the Python app and update it so it correctly queries Elasticsearch and returns the result in the user interface.
 
-### Exercise 5: Crawl the web
-
-**Objective:** Learn how to crawl websites
-
-#### Task:
-
-Use Elasticsearch's [Web Crawler](https://www.elastic.co/web-crawler) to gather data from the [https://www.hslu.ch](https://www.hslu.ch) website.
-**HINT:** You find the Web Crawler in Kibana under Search -> Content
-Ignore the listed jobs by adding a [disallow policy](https://www.elastic.co/guide/en/enterprise-search/current/crawler-managing.html#crawler-managing-crawl-rules) for everything that contains:
-
-```
-/hochschule-luzern/ueber-uns/jobs-und-karriere/
-```
-
-You should get **10'000+ documents**
-
-### Exercise 6: Use Kibana to discover the data
+### Exercise 5: Use Kibana to discover the data
 
 **Objective:** Browse through the data using Kibana's Discover functionality
 
