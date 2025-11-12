@@ -20,10 +20,51 @@
 
 - name: Confirm deletion
   pause:
-    prompt: "Are you sure you want to delete {{ users_to_delete | length }} user(s)? Press Enter to continue or Ctrl+C to abort"
+    prompt: "Are you sure you want to delete {{ users_to_delete | length }} user(s) and their API keys? Press Enter to continue or Ctrl+C to abort"
   when:
     - users_to_delete | length > 0
     - confirm_deletion | default(true) | bool
+
+- name: Get API keys for each user
+  uri:
+    url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/api_key?username={{ item }}"
+    method: GET
+    user: "{{ elasticsearch_admin_user }}"
+    password: "{{ elasticsearch_admin_password }}"
+    force_basic_auth: yes
+    validate_certs: "{{ validate_certs }}"
+    status_code: [200]
+  loop: "{{ users_to_delete }}"
+  register: user_api_keys
+  when: users_to_delete | length > 0
+
+- name: Delete API keys for each user
+  uri:
+    url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/api_key"
+    method: DELETE
+    user: "{{ elasticsearch_admin_user }}"
+    password: "{{ elasticsearch_admin_password }}"
+    force_basic_auth: yes
+    body_format: json
+    validate_certs: "{{ validate_certs }}"
+    status_code: [200, 404]
+    body:
+      ids: "{{ item.json.api_keys | map(attribute='id') | list }}"
+  loop: "{{ user_api_keys.results }}"
+  register: api_key_deletion
+  when:
+    - user_api_keys.results is defined
+    - item.json.api_keys is defined
+    - item.json.api_keys | length > 0
+
+- name: Display deleted API keys summary
+  debug:
+    msg: "Deleted {{ item.json.api_keys | length }} API key(s) for user: {{ item.item }}"
+  loop: "{{ user_api_keys.results }}"
+  when:
+    - user_api_keys.results is defined
+    - item.json.api_keys is defined
+    - item.json.api_keys | length > 0
 
 - name: Delete Kibana users
   uri:
@@ -77,12 +118,18 @@
     - role_deletion is defined
     - role_deletion.status == 200
 
+- name: Calculate total API keys deleted
+  set_fact:
+    total_api_keys_deleted: "{{ user_api_keys.results | selectattr('json.api_keys', 'defined') | map(attribute='json.api_keys') | map('length') | sum }}"
+  when: user_api_keys.results is defined
+
 - name: Cleanup summary
   debug:
     msg:
       - "=========================================="
       - "Kibana Users Cleanup Summary"
       - "=========================================="
+      - "API keys deleted: {{ total_api_keys_deleted | default(0) }}"
       - "Users deleted: {{ users_to_delete | length }}"
       - "Role deleted: {{ 'Yes' if (role_deletion is defined and role_deletion.status == 200) else 'No (not found or not deleted)' }}"
       - "=========================================="

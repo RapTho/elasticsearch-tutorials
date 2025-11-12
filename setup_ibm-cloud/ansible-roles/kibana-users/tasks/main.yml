@@ -8,7 +8,7 @@
     force_basic_auth: yes
     body_format: json
     validate_certs: "{{ validate_certs }}"
-    status_code: [200, 201]
+    status_code: [200]
     body:
       cluster:
         - "monitor"
@@ -16,6 +16,7 @@
         - "monitor_snapshot"
         - "manage_ilm"
         - "manage"
+        - "manage_own_api_key"
       indices:
         - names: ["*"]
           privileges:
@@ -48,7 +49,7 @@
     msg: "Role {{ kibana_user_role_name }} created/updated successfully"
   when: role_creation.status in [200, 201]
 
-- name: Create or update Kibana users in Elasticsearch
+- name: Create Kibana users in Elasticsearch
   uri:
     url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/user/{{ kibana_user_prefix }}{{ item }}"
     method: POST
@@ -57,7 +58,7 @@
     force_basic_auth: yes
     body_format: json
     validate_certs: "{{ validate_certs }}"
-    status_code: [200, 201]
+    status_code: [200]
     body:
       password: "{{ kibana_user_default_password }}"
       roles:
@@ -69,9 +70,9 @@
   register: user_creation
   changed_when: user_creation.status == 201
 
-- name: Display created/updated users
+- name: Display created users
   debug:
-    msg: "{{ 'Created' if item.status == 201 else 'Already exists' }}: {{ kibana_user_prefix }}{{ item.item }}"
+    msg: "{{ 'Created' if item.status == 200}}: {{ kibana_user_prefix }}{{ item.item }}"
   loop: "{{ user_creation.results }}"
   when: user_creation.results is defined
 
@@ -94,6 +95,7 @@
       - "  - Full access to Discover, Visualize, and Dashboard"
       - "  - Create and manage ILM policies"
       - "  - Full access to Index Lifecycle Management UI"
+      - "  - Create and manage their own API keys"
       - "=========================================="
       - "IMPORTANT: Users should change their password on first login!"
       - "=========================================="
