@@ -35,13 +35,13 @@ GET /_cat/shards?v
 Let's add a new index with some data to dive deeper into shards. First, let's create a new index called `books`
 
 ```
-PUT /books
+PUT /${username}-books
 ```
 
 Add some documents to the new index using the `_bulk` API
 
 ```
-POST /books/_bulk
+POST /${username}-books/_bulk
 {"index": { "_id": 1}}
 {"id": 1, "title": "The Hobbit", "author": "J.R.R. Tolkien", "genre": "Fantasy", "year": 1937}
 {"index": { "_id": 2}}
@@ -53,7 +53,7 @@ POST /books/_bulk
 Let's check if all books were added.
 
 ```
-GET /books/_search
+GET /${username}-books/_search
 {
   "query": {
   "match_all": {}
@@ -64,13 +64,13 @@ GET /books/_search
 Retrieve some details of the new index. Adding `books` to the path allows us to retrieve data related to our `books` index only.
 
 ```
-GET /_cat/indices/books?v
+GET /_cat/indices/${username}-books?v
 ```
 
 Inspect the newly created shards. Adding `books` to the path retrieves only the shards belonging to the `books` index.
 
 ```
-GET /_cat/shards/books?v
+GET /_cat/shards/${username}-books?v
 ```
 
 ### Replication
@@ -78,7 +78,7 @@ GET /_cat/shards/books?v
 Let's increase the number of replicas. It's a setting of the index so we need to update the index settings.
 
 ```
-PUT /books/_settings
+PUT /${username}-books/_settings
 {
   "index" : {
   "number_of_replicas" : 2
@@ -89,7 +89,7 @@ PUT /books/_settings
 Let's check if the new replicas were deployed.
 
 ```
-GET /_cat/shards/books?v
+GET /_cat/shards/${username}-books?v
 ```
 
 - Q: What is the problem with the new replica?
@@ -97,7 +97,7 @@ GET /_cat/shards/books?v
 ```
 GET _cluster/allocation/explain
 {
-  "index": "books",
+  "index": "${username}-books",
   "shard": 0,
   "primary": false
 }
@@ -106,7 +106,7 @@ GET _cluster/allocation/explain
 Reset the `number_of_replicas` to `1`
 
 ```
-PUT /books/_settings
+PUT /${username}-books/_settings
 {
   "index" : {
   "number_of_replicas" : 1
@@ -119,7 +119,7 @@ PUT /books/_settings
 In order to change the number of primary shards we need to copy the data to a new index. For this, we first need to disable write operations to the index `books`.
 
 ```
-PUT /books/_settings
+PUT /${username}-books/_settings
 {
   "index.blocks.write": true
 }
@@ -128,7 +128,7 @@ PUT /books/_settings
 Now to use the [Split API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-split-index.html) to create new index with two shards.
 
 ```
-POST /books/_split/books2
+POST /${username}-books/_split/${username}-books2
 {
   "settings": {
   "index.number_of_shards": 2
@@ -139,7 +139,7 @@ POST /books/_split/books2
 Finally, enable write operations to original index again.
 
 ```
-PUT /books/_settings
+PUT /${username}-books/_settings
 {
   "index.blocks.write": null
 }
@@ -148,7 +148,7 @@ PUT /books/_settings
 Inspect the shards for the newly created index.
 
 ```
-GET /_cat/shards/books2?v
+GET /_cat/shards/${username}-books2?v
 ```
 
 ### Aliases
@@ -158,13 +158,13 @@ Another approach to increase the number of shards is to combine multiple indices
 Let's try it out. First we create a new index called `books3`...
 
 ```
-PUT /books3
+PUT /${username}-books3
 ```
 
 Then we add some data to it
 
 ```
-PUT /books3/_doc/4
+PUT /${username}-books3/_doc/4
 {
   "id": 4,
   "title": "The Great Gatsby",
@@ -172,7 +172,7 @@ PUT /books3/_doc/4
   "genre": "Classics",
   "year": 1925
 }
-PUT /books3/_doc/5
+PUT /${username}-books3/_doc/5
 {
   "id": 5,
   "title": "Pride and Prejudice",
@@ -190,14 +190,14 @@ POST /_aliases
   "actions": [
     {
       "add": {
-        "index": "books",
-        "alias": "booksa"
+        "index": "${username}-books",
+        "alias": "${username}-booksa"
       }
     },
       {
       "add": {
-        "index": "books3",
-        "alias": "booksa"
+        "index": "${username}-books3",
+        "alias": "${username}-booksa"
       }
     }
   ]
@@ -219,13 +219,13 @@ GET /_cat/aliases?v
 The alias can be used like any other index. For example, we can retrieve corresponding shards
 
 ```
-GET /_cat/shards/booksa?v
+GET /_cat/shards/${username}-booksa?v
 ```
 
 We can also use the alias to query data. The query is executed on both underlying indices.
 
 ```
-GET /booksa/_search
+GET /${username}-booksa/_search
 {
   "query": {
   "match_all": {}
@@ -253,7 +253,7 @@ PUT _cluster/settings
 Let's create a comprehensive lifecycle policy that demonstrates all phases with actions available in the basic license:
 
 ```
-PUT _ilm/policy/sensor-data-policy
+PUT _ilm/policy/${username}-sensor-data-policy
 {
   "policy": {
     "phases": {
@@ -294,7 +294,7 @@ PUT _ilm/policy/sensor-data-policy
 Create a component template for mappings that defines our sensor data structure:
 
 ```
-PUT _component_template/sensor-mappings
+PUT _component_template/${username}-sensor-mappings
 {
   "template": {
     "mappings": {
@@ -327,11 +327,11 @@ PUT _component_template/sensor-mappings
 Create a component template for settings that references our ILM policy:
 
 ```
-PUT _component_template/sensor-settings
+PUT _component_template/${username}-sensor-settings
 {
   "template": {
     "settings": {
-      "index.lifecycle.name": "sensor-data-policy",
+      "index.lifecycle.name": "${username}-sensor-data-policy",
       "index.number_of_shards": 2,
       "index.number_of_replicas": 1
     }
@@ -344,11 +344,11 @@ PUT _component_template/sensor-settings
 Combine the component templates into an [index template](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-templates.html) for our data stream:
 
 ```
-PUT _index_template/sensor-data-template
+PUT _index_template/${username}-sensor-data-template
 {
-  "index_patterns": ["sensor-data*"],
+  "index_patterns": ["${username}-sensor-data*"],
   "data_stream": {},
-  "composed_of": ["sensor-mappings", "sensor-settings"],
+  "composed_of": ["${username}-sensor-mappings", "${username}-sensor-settings"],
   "priority": 500
 }
 ```
@@ -358,7 +358,7 @@ PUT _index_template/sensor-data-template
 Now we can start ingesting data. The data stream and its first backing index will be created automatically:
 
 ```
-POST /sensor-data/_doc
+POST /${username}-sensor-data/_doc
 {
   "@timestamp": "2024-01-15T10:00:00.000Z",
   "sensor_id": "sensor-001",
@@ -375,7 +375,7 @@ POST /sensor-data/_doc
 Add more sensor readings to trigger a rollover (we set max_docs to 5):
 
 ```
-POST /sensor-data/_bulk
+POST /${username}-sensor-data/_bulk
 { "create": {} }
 { "@timestamp": "2024-01-15T10:05:00.000Z", "sensor_id": "sensor-001", "temperature": 22.8, "humidity": 44.8, "location": {"lat": 40.7128, "lon": -74.0060}, "status": "active"}
 { "create": {} }
@@ -393,7 +393,7 @@ POST /sensor-data/_bulk
 View the data stream information:
 
 ```
-GET _data_stream/sensor-data
+GET _data_stream/${username}-sensor-data
 ```
 
 #### Observe ILM Phase Transitions
@@ -401,7 +401,7 @@ GET _data_stream/sensor-data
 Wait about 30 seconds and check the ILM status to see indices moving to the warm phase:
 
 ```
-GET .ds-sensor-data*/_ilm/explain
+GET .ds-${username}-sensor-data*/_ilm/explain
 ```
 
 You should see:
@@ -415,14 +415,14 @@ You should see:
 Undo what we did in this lab:
 
 ```
-DELETE books
-DELETE books2
-DELETE books3
-DELETE _data_stream/sensor-data
-DELETE _index_template/sensor-data-template
-DELETE _component_template/sensor-mappings
-DELETE _component_template/sensor-settings
-DELETE _ilm/policy/sensor-data-policy
+DELETE ${username}-books
+DELETE ${username}-books2
+DELETE ${username}-books3
+DELETE _data_stream/${username}-sensor-data
+DELETE _index_template/${username}-sensor-data-template
+DELETE _component_template/${username}-sensor-mappings
+DELETE _component_template/${username}-sensor-settings
+DELETE _ilm/policy/${username}-sensor-data-policy
 ```
 
 Reset the ILM polling interval to default:

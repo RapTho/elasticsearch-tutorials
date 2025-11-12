@@ -2,7 +2,7 @@
 
 ## Architecture
 
-![architecture](./files/architecture.svg)
+![architecture](../files/architecture.svg)
 
 ## Create Database for Elasticsearch service
 

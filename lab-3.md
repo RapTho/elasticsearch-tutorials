@@ -5,19 +5,19 @@
 Start by creating a new index for books
 
 ```
-PUT /books4
+PUT /${username}-books4
 ```
 
 Get the current mapping for the new index (should be empty).
 
 ```
-GET /books4/_mapping
+GET /${username}-books4/_mapping
 ```
 
 Add a document to the index.
 
 ```
-POST /books4/_doc
+POST /${username}-books4/_doc
 {
   "id": 1,
   "title": "The Great Gatsby",
@@ -30,13 +30,13 @@ POST /books4/_doc
 Check the mapping again. It shows different fields derived from first document. This is called dynamic mapping.
 
 ```
-GET /books4/_mapping
+GET /${username}-books4/_mapping
 ```
 
 Add another document with a new field
 
 ```
-POST /books4/_doc
+POST /${username}-books4/_doc
 {
   "id": 2,
   "title": "Pride and Prejudice",
@@ -49,13 +49,13 @@ POST /books4/_doc
 Once more, check the mapping. Note, that the new field appears in the mapping as well.
 
 ```
-GET /books4/_mapping
+GET /${username}-books4/_mapping
 ```
 
 Let's see what happens to nested data
 
 ```
-POST /books4/_doc
+POST /${username}-books4/_doc
 {
   "id": 3,
   "title": "The Catcher in the Rye",
@@ -79,7 +79,7 @@ POST /books4/_doc
 Retrieve the data
 
 ```
-GET /books4/_search
+GET /${username}-books4/_search
 {
   "fields": ["*"]
 }
@@ -88,7 +88,7 @@ GET /books4/_search
 Note that the nested data is not stored (i.e. indexed) as an array of objects but as seperate arrays of strings. This means that the relationship between `year` and `sold` is lost in the index. You can see it by querying for all books which have an edition with `year < 1955` and `sold > 100000`. In our case there is no such book, but it is returned because the object was flattened.
 
 ```
-GET /books4/_search
+GET /${username}-books4/_search
 {
   "query": {
     "bool": {
@@ -116,7 +116,7 @@ GET /books4/_search
 In [lab 4](./lab-4.md) we will learn how to fix this issue with `nested` data. For now, let's play around with updates. First, add a new book to the index.
 
 ```
-PUT /books4/_doc/5
+PUT /${username}-books4/_doc/5
 {
   "id": 5,
   "title": "The Hobbit",
@@ -128,7 +128,7 @@ PUT /books4/_doc/5
 Now try to update the popularity
 
 ```
-PUT /books4/_doc/5
+PUT /${username}-books4/_doc/5
 {
   "popularity": 1.1
 }
@@ -137,14 +137,14 @@ PUT /books4/_doc/5
 Check the document
 
 ```
-GET /books4/_doc/5
+GET /${username}-books4/_doc/5
 ```
 
 With this operation, we removed the rest of the document.
 Redo the previous command and then update the same document using the [\_update API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update.html#_update_part_of_a_document).
 
 ```
-POST /books4/_update/5
+POST /${username}-books4/_update/5
 {
   "doc": {
   "popularity": 1.1
@@ -155,23 +155,23 @@ POST /books4/_update/5
 Check the result
 
 ```
-GET /books4/_doc/5
+GET /${username}-books4/_doc/5
 ```
 
 Now the partial update worked as expected. Let's try a scripted update. Instead of pushing field data to Elasticsearch, we provide a script which updates the value. The following call increases the popularity by 1.
 
 ```
-POST /books4/_update/5
+POST /${username}-books4/_update/5
 {
   "script" : "ctx._source.popularity += 1"
 }
-GET /books4/_doc/5
+GET /${username}-books4/_doc/5
 ```
 
 We can also update multiple documents with one request using the [\_update_by_query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update-by-query.html). The following request adds the author name to the title field for all books that were published after 1900.
 
 ```
-POST /books4/_update_by_query
+POST /${username}-books4/_update_by_query
 {
   "query": {
     "range": {
@@ -189,13 +189,13 @@ POST /books4/_update_by_query
 Get all books to verify your changes.
 
 ```
-GET /books4/_search
+GET /${username}-books4/_search
 ```
 
 Now create an index with explicit mapping. To enforce a data schema we set `"dynamic": "strict"`. Otherwise, explicit mappings still allow dynamic mapping.
 
 ```
-PUT /myusers
+PUT /${username}-myusers
   {
     "mappings": {
       "dynamic": "strict",
@@ -215,7 +215,7 @@ PUT /myusers
 Add a document to the index. This works, as it complies with our previously defined schema.
 
 ```
-POST /myusers/_doc
+POST /${username}-myusers/_doc
 {
   "name": "Foo Bar",
   "birthday": "1990-04-27"
@@ -225,7 +225,7 @@ POST /myusers/_doc
 This next query will fail. Can you guess why?
 
 ```
-POST /myusers/_doc
+POST /${username}-myusers/_doc
 {
   "name": "John Doe",
   "birthday": true
@@ -235,7 +235,7 @@ POST /myusers/_doc
 Also this query will fail, as we try to introduce the new field `gender` which we didn't define previously.
 
 ```
-POST /myusers/_doc
+POST /${username}-myusers/_doc
 {
   "name": "Foo Bar",
   "birthday": "1990-04-27",
@@ -246,7 +246,7 @@ POST /myusers/_doc
 Make sure only the first, valid document was added.
 
 ```
-GET /myusers/_search
+GET /${username}-myusers/_search
 ```
 
 ### Text analysis
@@ -294,7 +294,7 @@ GET /_analyze
 Finally, let's create our own analyzer. We only want to take words into account which have more than 4 characters. To create a new analyzer, we need to create a new index.
 
 ```
-PUT /custom-analyzer-index
+PUT /${username}-custom-analyzer-index
 {
   "settings": {
     "analysis": {
@@ -329,7 +329,7 @@ PUT /custom-analyzer-index
 Test the analyzer by calling `_analyze` on the index context.
 
 ```
-GET /custom-analyzer-index/_analyze
+GET /${username}-custom-analyzer-index/_analyze
 {
   "text": "The quick brown fox jumped over the lazy dog.",
   "analyzer": "my_word_length_analyzer"
@@ -339,7 +339,7 @@ GET /custom-analyzer-index/_analyze
 # Clean up
 
 ```
-DELETE /books4
-DELETE /myusers
-DELETE /custom-analyzer-index
+DELETE /${username}-books4
+DELETE /${username}-myusers
+DELETE /${username}-custom-analyzer-index
 ```

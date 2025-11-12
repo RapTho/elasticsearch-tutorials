@@ -4,3 +4,7 @@ venv/
 solutions.md
 ansible-env
 *.log
+
+#custom
+input.json
+input_replaced.json
