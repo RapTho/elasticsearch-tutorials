@@ -1,10 +1,10 @@
 # elasticsearch-tutorials
 
+Tutorials to learn the basics of Elasticsearch
+
 ## Overview of IBM Cloud services
 
 ![architecture](./setup_ibm-cloud/files/architecture.svg)
-
-Tutorials to learn the basics of Elasticsearch
 
 ## Labs
 
