@@ -14,6 +14,8 @@
         - "monitor"
         - "manage_index_templates"
         - "monitor_snapshot"
+        - "manage_ilm"
+        - "manage"
       indices:
         - names: ["*"]
           privileges:
@@ -26,22 +28,6 @@
             - "write"
             - "view_index_metadata"
             - "monitor"
-        - names:
-            [
-              ".ent-search-*",
-              ".elastic-connectors*",
-              "search-*",
-              ".search-acl-filter-*",
-              "search-crawler-*",
-            ]
-          privileges:
-            - "read"
-            - "write"
-            - "manage"
-            - "create_index"
-            - "delete_index"
-            - "delete"
-            - "index"
       applications:
         - application: "kibana-.kibana"
           privileges:
@@ -52,10 +38,7 @@
             - "feature_advancedSettings.read"
             - "feature_indexPatterns.all"
             - "feature_savedObjectsManagement.all"
-            - "feature_enterpriseSearch.all"
-            - "feature_enterpriseSearchContent.all"
-            - "feature_enterpriseSearchAnalytics.all"
-            - "feature_appSearch.all"
+            - "feature_indexLifecycleManagement.all"
           resources: ["*"]
   register: role_creation
   changed_when: role_creation.status == 201
@@ -65,22 +48,9 @@
     msg: "Role {{ kibana_user_role_name }} created/updated successfully"
   when: role_creation.status in [200, 201]
 
-- name: Check if Kibana users already exist
-  uri:
-    url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/user/{{ kibana_user_prefix }}{{ item }}"
-    method: GET
-    user: "{{ elasticsearch_admin_user }}"
-    password: "{{ elasticsearch_admin_password }}"
-    force_basic_auth: yes
-    validate_certs: "{{ validate_certs }}"
-    status_code: [200, 404]
-  loop: "{{ range(1, kibana_users_count + 1) | list }}"
-  register: existing_users
-  failed_when: false
-
 - name: Create or update Kibana users in Elasticsearch
   uri:
-    url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/user/{{ kibana_user_prefix }}{{ item.item }}"
+    url: "{{ elasticsearch_protocol }}://{{ elasticsearch_host }}:{{ elasticsearch_port }}/_security/user/{{ kibana_user_prefix }}{{ item }}"
     method: POST
     user: "{{ elasticsearch_admin_user }}"
     password: "{{ elasticsearch_admin_password }}"
@@ -92,19 +62,16 @@
       password: "{{ kibana_user_default_password }}"
       roles:
         - "{{ kibana_user_role_name }}"
-      full_name: "Kibana Developer User {{ item.item }}"
-      email: "{{ kibana_user_prefix }}{{ item.item }}@example.com"
+      full_name: "Kibana Developer User {{ item }}"
+      email: "{{ kibana_user_prefix }}{{ item }}@example.com"
       enabled: true
-  loop: "{{ existing_users.results }}"
-  when: >
-    item.status == 404 or
-    (item.status == 200 and
-     (item.json[kibana_user_prefix ~ item.item].roles | default([]) | sort != [kibana_user_role_name] | sort))
+  loop: "{{ range(1, kibana_users_count + 1) | list }}"
   register: user_creation
+  changed_when: user_creation.status == 201
 
 - name: Display created/updated users
   debug:
-    msg: "{{ 'Skipped (no changes)' if item.skipped | default(false) else ('Created' if item.status == 201 else 'Updated') }}: {{ kibana_user_prefix }}{{ item.item.item }}"
+    msg: "{{ 'Created' if item.status == 201 else 'Already exists' }}: {{ kibana_user_prefix }}{{ item.item }}"
   loop: "{{ user_creation.results }}"
   when: user_creation.results is defined
 
@@ -114,17 +81,19 @@
       - "=========================================="
       - "Kibana Users Creation Summary"
       - "=========================================="
-      - "Total users created: {{ kibana_users_count }}"
+      - "Total users processed: {{ kibana_users_count }}"
       - "Username pattern: {{ kibana_user_prefix }}[1-{{ kibana_users_count }}]"
       - "Default password: {{ kibana_user_default_password }}"
       - "Role assigned: {{ kibana_user_role_name }}"
       - "=========================================="
       - "Users have the following permissions:"
+      - "  - Adjust cluster settings"
       - "  - Create and manage indices"
       - "  - Access Kibana Dev Tools"
       - "  - View Elasticsearch cluster health and metrics"
       - "  - Full access to Discover, Visualize, and Dashboard"
-      - "  - Full access to Enterprise Search and Web Crawler"
+      - "  - Create and manage ILM policies"
+      - "  - Full access to Index Lifecycle Management UI"
       - "=========================================="
       - "IMPORTANT: Users should change their password on first login!"
       - "=========================================="
