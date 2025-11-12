@@ -1,0 +1,28 @@
+graph TB
+    subgraph "IBM Cloud"
+        subgraph "Databases for Elasticsearch"
+            ES[("Elasticsearch Database")]
+            ES_API["Elasticsearch REST API"]
+        end
+        
+        subgraph "IBM Code Engine"
+            CE_PROJECT["Code Engine Project"]
+            KIBANA["Kibana Container"]
+        end
+    end
+    
+    subgraph "Users"
+        USERS["End Users"]
+    end
+    
+    %% Connections
+    CE_PROJECT -->|"Hosts"| KIBANA
+    KIBANA -->|"HTTPS Connection to <br>Elasticsearch URL"| ES_API
+    ES_API -->|"Queries & Indexes"| ES
+    USERS -->|"HTTPS Connection to <br> Kibana URL"| KIBANA
+    KIBANA -->|"Authenticates users"| ES_API
+    
+    style ES fill:#00a9e0
+    style KIBANA fill:#00bfb3
+    style CE_PROJECT fill:#0f62fe
+    style ES_API fill:#00a9e0

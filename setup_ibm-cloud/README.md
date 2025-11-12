@@ -1,5 +1,9 @@
 # Setup Elasticsearch and Kibana on IBM Cloud
 
+## Architecture
+
+![architecture](./files/architecture.svg)
+
 ## Create Database for Elasticsearch service
 
 Create an instance of this service: [https://cloud.ibm.com/databases/databases-for-elasticsearch/create](https://cloud.ibm.com/databases/databases-for-elasticsearch/create)
