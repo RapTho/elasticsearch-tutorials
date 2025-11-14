@@ -54,9 +54,11 @@ $env:KIBANA_USERNAME="your_username_here"
 **Windows user only**:
 If you face issues with your `curl` requests, check the [troubleshooting section](#troubleshooting-curl-on-windows)
 
-3. Add data to the newly created index using `curl`. Use the sample data below in a [bulk request](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html) to the `${KIBANA_USERNAME}-bicycle_products/_bulk` endpoint.
+3. Add data to the newly created index using a [bulk request](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html) to the `${KIBANA_USERNAME}-bicycle_products/_bulk` endpoint.
 
 **IMPORTANT:** Replace `${KIBANA_USERNAME}` with your actual username in the endpoint URL, or use the `KIBANA_USERNAME` shell variable as described above.
+
+**Hint: for curl:** Save the data above to a file (e.g., `bulk_data.json`) and use the `--data-binary` flag.
 
 ```
 { "index" : { "_id" : "1" } }
