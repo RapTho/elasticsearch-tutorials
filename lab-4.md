@@ -12,25 +12,25 @@ Add data to the `recipes` index
 
 ```
 POST /${username}-recipes/_bulk
-{"index":{"_index":"${username}-recipes","_id":"1"}}
+{"index":{"_id":"1"}}
 {"name":"Classic Spaghetti Carbonara","ingredients":["spaghetti","eggs","pecorino cheese","guanciale"],"instructions":"1. Cook spaghetti in boiling salted water. 2. Whisk together eggs and cheese. 3. Fry guanciale. 4. Toss spaghetti with guanciale and egg mixture. 5. Serve with freshly cracked black pepper.","likes":123}
-{"index":{"_index":"${username}-recipes","_id":"2"}}
+{"index":{"_id":"2"}}
 {"name":"Beef Stroganoff","ingredients":["beef sirloin","onion","mushrooms","sour cream","beef broth"],"instructions":"1. Cut beef into strips. 2. Sauté beef and onion. 3. Add mushrooms and cook until tender. 4. Add beef broth and bring to a simmer. 5. Stir in sour cream. 6. Serve over noodles.","likes":12}
-{"index":{"_index":"${username}-recipes","_id":"3"}}
+{"index":{"_id":"3"}}
 {"name":"Chicken Alfredo","ingredients":["chicken breast","heavy cream","parmesan cheese","fettuccine"],"instructions":"1. Cook fettuccine in boiling salted water. 2. Cut chicken into strips and sauté until cooked through. 3. Add heavy cream and bring to a simmer. 4. Stir in parmesan cheese until melted. 5. Toss pasta with sauce and chicken. 6. Serve hot.","likes":3}
-{"index":{"_index":"${username}-recipes","_id":"4"}}
+{"index":{"_id":"4"}}
 {"name":"Beef Chili","ingredients":["ground beef","onion","red bell pepper","kidney beans","tomato sauce"],"instructions":"1. Sauté onion and red pepper. 2. Add ground beef and cook until browned. 3. Add kidney beans and tomato sauce. 4. Simmer for 30 minutes. 5. Serve hot.","likes":45}
-{"index":{"_index":"${username}-recipes","_id":"5"}}
+{"index":{"_id":"5"}}
 {"name":"Chicken Enchiladas","ingredients":["shredded chicken","enchilada sauce","flour tortillas","shredded cheddar cheese"],"instructions":"1. Preheat oven to 350 degrees. 2. Mix shredded chicken with enchilada sauce. 3. Place chicken mixture in center of tortillas and roll up. 4. Place enchiladas in a baking dish. 5. Cover with shredded cheese. 6. Bake for 20 minutes. 7. Serve hot.","likes":91}
-{"index":{"_index":"${username}-recipes","_id":"6"}}
+{"index":{"_id":"6"}}
 {"name":"Roast Pork Tenderloin","ingredients":["pork tenderloin","garlic","rosemary","olive oil"],"instructions":"1. Preheat oven to 375 degrees. 2. Combine garlic, rosemary, and olive oil in a small bowl. 3. Rub mixture over pork tenderloin. 4. Roast in the oven for 20-25 minutes. 5. Serve hot.","likes":1}
-{"index":{"_index":"${username}-recipes","_id":"7"}}
+{"index":{"_id":"7"}}
 {"name":"Baked Salmon","ingredients":["salmon fillet","lemon","garlic","butter"],"instructions":"1. Preheat oven to 350 degrees. 2. Place salmon fillet on a sheet of aluminum foil. 3. Squeeze lemon over salmon. 4. Melt butter and mix with garlic. 5. Pour butter mixture over salmon. 6. Bake for 20 minutes. 7. Serve hot.","likes":32}
-{"index":{"_index":"${username}-recipes","_id":"8"}}
+{"index":{"_id":"8"}}
 {"name":"Tacos","ingredients":["ground beef","taco seasoning","tortilla chips","shredded lettuce","diced tomatoes"],"instructions":"1. Brown ground beef in a skillet. 2. Add taco seasoning and cook according to package directions. 3. Serve over a bed of tortilla chips. 4. Top with shredded lettuce and diced tomatoes. 5. Serve hot.","likes":74}
-{"index":{"_index":"${username}-recipes","_id":"9"}}
+{"index":{"_id":"9"}}
 {"name":"Spicy Chicken Curry","ingredients":["chicken breast","curry powder","coconut milk","tomatoes","onion"],"instructions":"1. Cut chicken into cubes and sauté in a large pot. 2. Add onion and cook until translucent. 3. Add curry powder and cook for 1 minute. 4. Add diced tomatoes and coconut milk. 5. Simmer for 20 minutes. 6. Serve hot over rice.","likes":16}
-{"index":{"_index":"${username}-recipes","_id":"10"}}
+{"index":{"_id":"10"}}
 {"name":"Creamy Tomato Soup","ingredients":["tomatoes","onion","garlic","heavy cream"],"instructions":"1. Heat olive oil in a large pot. 2. Add chopped onion and garlic and sauté until softened. 3. Add chopped tomatoes and simmer for 15 minutes. 4. Blend soup until smooth. 5. Add heavy cream and simmer for an additional 5 minutes. 6. Serve hot. There is no chicken in tomato soup.","likes":17}
 ```
 
