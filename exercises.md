@@ -54,50 +54,50 @@ $env:KIBANA_USERNAME="your_username_here"
 **Windows user only**:
 If you face issues with your `curl` requests, check the [troubleshooting section](#troubleshooting-curl-on-windows)
 
-3. Add data to the newly created index using `curl`. Use the sample data below in a [bulk request](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html).
+3. Add data to the newly created index using `curl`. Use the sample data below in a [bulk request](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html) to the `${KIBANA_USERNAME}-bicycle_products/_bulk` endpoint.
 
-**IMPORTANT:** Replace `${KIBANA_USERNAME}` with your actual username in all the `_index` fields below, or use the `KIBANA_USERNAME` shell variable as described above.
+**IMPORTANT:** Replace `${KIBANA_USERNAME}` with your actual username in the endpoint URL, or use the `KIBANA_USERNAME` shell variable as described above.
 
 ```
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "1" } }
+{ "index" : { "_id" : "1" } }
 { "Name": "Speedster Road Bike", "Price": 850.00, "Production Date": "2024-04-01T00:00:00Z", "Available": false, "Category": "Road Bikes", "Parts": ["frame", "wheels", "brakes"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "2" } }
+{ "index" : { "_id" : "2" } }
 { "Name": "Mountain King Bicycle", "Price": 1200.00, "Production Date": "2024-04-02T00:00:00Z", "Available": false, "Category": "Mountain Bikes", "Parts": ["suspension", "off-road tires", "chain"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "3" } }
+{ "index" : { "_id" : "3" } }
 { "Name": "Urban Commuter 3000", "Price": 600.00, "Production Date": "2024-04-03T00:00:00Z", "Available": true, "Category": "City Bikes", "Parts": ["bell", "basket", "lights"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "4" } }
+{ "index" : { "_id" : "4" } }
 { "Name": "Trailblazer XC 29", "Price": 1100.00, "Production Date": "2024-04-04T00:00:00Z", "Available": true, "Category": "Cross Country", "Parts": ["helmet", "gloves", "handlebar"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "5" } }
+{ "index" : { "_id" : "5" } }
 { "Name": "Night Rider 500", "Price": 950.00, "Production Date": "2024-04-05T00:00:00Z", "Available": true, "Category": "Hybrid Bikes", "Parts": ["LED lights", "hybrid tires", "comfort seat"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "6" } }
+{ "index" : { "_id" : "6" } }
 { "Name": "Breeze Leisure Bike", "Price": 500.00, "Production Date": "2024-04-06T00:00:00Z", "Available": false, "Category": "Leisure Bikes", "Parts": ["basket", "wide seat", "cruise handlebars"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "7" } }
+{ "index" : { "_id" : "7" } }
 { "Name": "Thunder BMX", "Price": 300.00, "Production Date": "2024-04-07T00:00:00Z", "Available": true, "Category": "BMX Bikes", "Parts": ["stunt pegs", "reinforced frame", "BMX handlebar"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "8" } }
+{ "index" : { "_id" : "8" } }
 { "Name": "Glider 1000 Roadster", "Price": 650.00, "Production Date": "2024-04-08T00:00:00Z", "Available": true, "Category": "Road Bikes", "Parts": ["road tires", "aerodynamic frame", "racing saddle"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "9" } }
+{ "index" : { "_id" : "9" } }
 { "Name": "Cyclone Mountain Series", "Price": 1350.00, "Production Date": "2024-04-20T00:00:00Z", "Available": true, "Category": "Mountain Bikes", "Parts": ["all-terrain tires", "advanced suspension", "carbon frame"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "10" } }
+{ "index" : { "_id" : "10" } }
 { "Name": "Ranger Trail Expert", "Price": 1050.00, "Production Date": "2024-04-10T00:00:00Z", "Available": true, "Category": "Mountain Bikes", "Parts": ["shock absorbers", "trail tires", "durable pedals"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "11" } }
+{ "index" : { "_id" : "11" } }
 { "Name": "City Glide 700", "Price": 670.00, "Production Date": "2024-04-11T00:00:00Z", "Available": false, "Category": "City Bikes", "Parts": ["commuter frame", "mudguards", "chain lock"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "12" } }
+{ "index" : { "_id" : "12" } }
 { "Name": "Pinnacle Road Ace", "Price": 890.00, "Production Date": "2024-04-12T00:00:00Z", "Available": true, "Category": "Road Bikes", "Parts": ["carbon wheelset", "speedometer", "drop handlebars"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "13" } }
+{ "index" : { "_id" : "13" } }
 { "Name": "Sunset Cruiser Deluxe", "Price": 550.00, "Production Date": "2024-04-13T00:00:00Z", "Available": true, "Category": "Leisure Bikes", "Parts": ["leather seat", "wide handlebars", "cruiser tires"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "14" } }
+{ "index" : { "_id" : "14" } }
 { "Name": "Freewheel X2 BMX", "Price": 320.00, "Production Date": "2024-04-14T00:00:00Z", "Available": true, "Category": "BMX Bikes", "Parts": ["freestyle tires", "360-degree rotor", "BMX forks"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "15" } }
+{ "index" : { "_id" : "15" } }
 { "Name": "ElectroRide E-Bike", "Price": 1400.00, "Production Date": "2024-04-15T00:00:00Z", "Available": true, "Category": "Electric Bikes", "Parts": ["electric motor", "battery pack", "digital display"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "16" } }
+{ "index" : { "_id" : "16" } }
 { "Name": "Touring Explorer 2000", "Price": 950.00, "Production Date": "2024-04-16T00:00:00Z", "Available": true, "Category": "Touring Bikes", "Parts": ["pannier rack", "touring tires", "comfort saddle"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "17" } }
+{ "index" : { "_id" : "17" } }
 { "Name": "Trail Blazer XT", "Price": 1300.00, "Production Date": "2024-04-17T00:00:00Z", "Available": true, "Category": "Mountain Bikes", "Parts": ["full suspension", "trail-specific gearing", "aluminum frame"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "18" } }
+{ "index" : { "_id" : "18" } }
 { "Name": "City Pro Commuter", "Price": 720.00, "Production Date": "2024-04-18T00:00:00Z", "Available": false, "Category": "City Bikes", "Parts": ["urban tires", "fenders", "rear rack"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "19" } }
+{ "index" : { "_id" : "19" } }
 { "Name": "Rapid Racer 5000", "Price": 1100.00, "Production Date": "2024-04-19T00:00:00Z", "Available": true, "Category": "Road Bikes", "Parts": ["carbon fiber frame", "aero wheels", "performance brakes"] }
-{ "index" : { "_index" : "${KIBANA_USERNAME}-bicycle_products", "_id" : "20" } }
+{ "index" : { "_id" : "20" } }
 { "Name": "Kids' Adventure 20", "Price": 250.00, "Production Date": "2024-04-20T00:00:00Z", "Available": true, "Category": "Kids' Bikes", "Parts": ["training wheels", "child-friendly grips", "colorful frame"] }
 ```
 
