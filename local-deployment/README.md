@@ -12,6 +12,8 @@ Make sure [compose is setup](https://podman-desktop.io/docs/compose/setting-up-c
 
 Instructions: [https://www.elastic.co/guide/en/elasticsearch/reference/8.15/docker.html#docker-compose-file](https://www.elastic.co/guide/en/elasticsearch/reference/8.15/docker.html#docker-compose-file)
 
+The default username is `elastic`
+
 Check the cluster's health from the command line
 
 ```bash
