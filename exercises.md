@@ -123,26 +123,15 @@ And how about the following one with a new field?
 
 You might want to check out [bool](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html) and [filter](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html) queries.
 
-### Exercise 3: Use Python to execute queries against Elasticsearch
+### Exercise 3: Create a Python script to query Elasticsearch and print results to console
 
-**Objective:** Execute an Elasticsearch query from a Python script
-
-#### Tasks:
+**Objective:** Execute Elasticsearch queries from a Python script and display results in the console.
 
 **OPTIONAL:** Use [virtual environments](https://virtualenv.pypa.io/en/latest/user_guide.html)
 
-1. Setup a new Pyhton project and get familiar with the [requests](https://pypi.org/project/requests/) library.
-2. Send a query to get the cluster health and print the response
+#### Environment variables
 
-### Exercise 4: Use template Python app to interact with Elasticsearch
-
-**Objective:** Learn how to use Python in combination with Elasticsearch.
-
-#### Tasks:
-
-**OPTIONAL:** Use [virtual environments](https://virtualenv.pypa.io/en/latest/user_guide.html)
-
-**IMPORTANT:** For Python exercises, you'll need to set the `KIBANA_USERNAME` environment variable before running your scripts:
+For Python exercises, you'll need to set the `KIBANA_USERNAME` environment variable before running your scripts:
 
 **macOS/Linux:**
 
@@ -164,23 +153,88 @@ KIBANA_USERNAME = os.environ.get('KIBANA_USERNAME')
 index_name = f"{KIBANA_USERNAME}-bicycle_products"
 ```
 
-1. Write a Python script that uses the `${KIBANA_USERNAME}-bicycle_products` index of the previous exercise to produce the following output:
+#### Tasks:
+
+1. **Setup Python project and install dependencies:**
+
+   - Create a new Python script file (e.g., `request.py`)
+   - Install the [requests](https://pypi.org/project/requests/) library: `pip install requests`
+   - Get familiar with making HTTP requests using the requests library
+
+2. **Create a simple GET request to test connectivity:**
+
+   - Write a Python script that sends a GET request to your Elasticsearch cluster to retrieve cluster health
+   - Include an Authorization header with your API key
+   - Print the response to the console
+
+3. **Query bicycle data and print formatted results:**
+   - Write a Python script that uses the `${KIBANA_USERNAME}-bicycle_products` index from Exercise 2 to query Elasticsearch
+   - Your script should execute queries to find:
+     - The maximum price (using a `max` aggregation on the `Price` field)
+     - The minimum price (using a `min` aggregation on the `Price` field)
+     - The number of available Road Bikes (using a `bool` query filtering by `Available: true` and a `terms` aggregation on the `Category` field)
+   - Print the following sentence to the console with the actual values:
 
 ```
 The most expensive bike costs VARIABLE_MAX_PRICE, while the cheapest bike costs VARIABLE_MIN_PRICE. There are VARIABLE_NUMBER_OF_ROAD_BIKES road bikes available.
 ```
 
-Variables description:
+Expected values:
 
-- VARIABLE_MAX_PRICE is the resulting value of a metric aggregation querying the most expensive bike. The value should be **1400**
-- VARIABLE_MIN_PRICE is the resulting value of a metric aggregation querying the cheapest bike. The value shoudl be **250**
-- VARIABLE_NUMBER_OF_ROAD_BIKES is the resulting value of a combination of query on the `Available` field and bucket aggregation over `Category`. You will then display the value for the bucket `Road Bikes`. The value should be **3**
-  <br>
-  <br>
+- VARIABLE_MAX_PRICE should be **1400.0**
+- VARIABLE_MIN_PRICE should be **250.0**
+- VARIABLE_NUMBER_OF_ROAD_BIKES should be **3**
 
-2. Use the [Python sample app](./python/) and send all the logs it produces to a new Elasticsearch index named `${KIBANA_USERNAME}-app-logs`.
+### Exercise 4: Integrate Elasticsearch queries into a Flask web application
 
-3. Continue working on the Python app and update it so it correctly queries Elasticsearch and returns the result in the user interface.
+**Objective:** Learn how to integrate Elasticsearch queries into a Python web application with a user interface.
+
+OPTIONAL: Use [virtual environments](https://virtualenv.pypa.io/en/latest/user_guide.html)
+
+#### Background:
+
+This exercise uses a simple Flask web application that's already set up for you in the [python/](./python/) directory. Flask is a lightweight Python web framework that makes it easy to create web applications.
+
+**About the Flask application:**
+
+- Flask needs to be installed: `pip install Flask` (or use `pip install -r requirements.txt` in the python directory)
+- The application starts a web server that runs on `localhost:8000`
+- The app has several routes (URL endpoints):
+  - `/` - Home page (returns JSON)
+  - `/about` - About page (returns JSON)
+  - `/api/data` - API endpoint (returns JSON data)
+  - `/ui` - User interface page (renders an HTML form)
+- To start the Flask app, run: `python main.py` from the python directory
+- Once running, you can access the UI in your browser at: `http://localhost:8000/ui`
+
+#### Tasks:
+
+1. **Setup and run the Flask application:**
+
+   - Navigate to the `python/` directory
+   - Install Flask if not already installed: `pip install -r requirements.txt`
+   - Start the application: `python main.py`
+   - Open your browser and navigate to `http://localhost:8000/ui` to see the user interface
+   - The UI allows you to select a bike category and displays a count (currently hardcoded to 12)
+
+2. **Integrate Elasticsearch query into the Flask UI:**
+   - Open the `main.py` file in the [Python sample app](./python/)
+   - Find the `/ui` route where there's a comment: `# Do the request to Elasticsearch`
+   - Implement an Elasticsearch query that counts the number of available bikes for the selected category
+   - The query should:
+     - Filter by `Available: true`
+     - Filter by the `Category` field matching the user's selected category
+     - Return the count of matching documents
+   - Replace the hardcoded `number = 12` with the actual count from your Elasticsearch query
+   - Restart the Flask application to test your changes
+   - Test the UI by selecting different categories and verifying the correct counts are displayed
+
+**Hints:**
+
+- Use the `requests` library to make HTTP calls to Elasticsearch (you may need to install it: `pip install requests`)
+- Remember to include your API key in the Authorization header
+- The category value comes from the form: `category = request.form['category']`
+- Make sure your `KIBANA_USERNAME` environment variable is set (see Exercise 3)
 
 ### Troubleshooting curl on Windows
 
