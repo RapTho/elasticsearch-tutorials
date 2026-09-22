@@ -75,6 +75,18 @@ Open a browser and visit [http://localhost:5601](http://localhost:5601)
 
 ## Troubleshoot
 
+### Docker Hub pull rate limits
+
+Docker Hub applies pull rate limits based on IP address. Anonymous pulls are limited to **100 pulls per 6 hours per IP**. In a university or shared network environment where many students share a single outgoing IP address, this limit can be hit quickly — the pull will fail with a `429 Too Many Requests` error.
+
+To work around this, log in to Docker Hub before pulling:
+
+```bash
+docker login
+```
+
+A free Docker Hub account raises the limit to **200 pulls per 6 hours** per account. If the shared IP limit is still being hit, ask your instructor whether a mirror registry or pre-pulled image tarball is available.
+
 Your cluster might fail to start due to failing bootstrap checks. Find the following workarounds below.
 
 ### Sneaky way
