@@ -13,49 +13,14 @@ Create an instance of this service: [https://cloud.ibm.com/databases/databases-f
 Use the following instructions to deploy Kibana as a container on IBM Code Engine:<br />
 [https://cloud.ibm.com/docs/databases-for-elasticsearch?topic=databases-for-elasticsearch-kibana-code-engine-icd-elasticsearch](https://cloud.ibm.com/docs/databases-for-elasticsearch?topic=databases-for-elasticsearch-kibana-code-engine-icd-elasticsearch)
 
-If you want to use a specific resource group for your Kibana deployment, do the following changes to the terraform script.
-
-```bash
-echo "variable "resource_group" {}" >> /path/to/variables.tf
-```
-
-Copy the below main.tf file
-
-```terraform
-terraform {
-  required_providers {
-    ibm = {
-      source  = "IBM-Cloud/ibm"
-      version = ">= 1.58.1"
-    }
-  }
-}
-
-provider "ibm" {
-  ibmcloud_api_key = var.ibmcloud_api_key
-  region           = var.region
-}
-```
-
-Modify the codeengine.tf file to read the resource_group_id value and use it. The rest of the script can remain as is
-
-```
-data "ibm_resource_group" "rg" {
-  name = var.resource_group
-}
-
-resource "ibm_code_engine_project" "kibana_code_engine" {
-  name              = "kibana-code-engine-project2"
-  resource_group_id = data.ibm_resource_group.rg.id
-
-}
-```
-
-Add the `resource_group` key-value pair in the terraform.tfvars file
-
-Then `terraform plan` and `terraform apply` as described
-
 ## Add users to Kibana
+
+Two Ansible roles are provided to manage Kibana users against an IBM Cloud Databases for Elasticsearch cluster:
+
+| Role | Purpose |
+|------|---------|
+| [`ansible-roles/kibana-users`](ansible-roles/kibana-users/) | Creates numbered Kibana users with developer permissions |
+| [`ansible-roles/kibana-users-cleanup`](ansible-roles/kibana-users-cleanup/) | Removes those users and the associated custom role |
 
 ### Optional: Create virtual environment
 
@@ -63,4 +28,76 @@ Then `terraform plan` and `terraform apply` as described
 python3 -m venv ansible-env
 source ansible-env/bin/activate  # On Windows: ansible-env\Scripts\activate
 pip install ansible
+```
+
+### Configure connection details
+
+Edit [`ansible-roles/kibana-users/defaults/main.yml`](ansible-roles/kibana-users/defaults/main.yml) with your cluster's connection details:
+
+```yaml
+elasticsearch_host: "<your-hostname>.databases.appdomain.cloud"
+elasticsearch_port: <port>
+elasticsearch_protocol: "https"
+elasticsearch_admin_user: "<your-admin-user>"
+elasticsearch_admin_password: "{{ lookup('env', 'ES_ADMIN_PASSWORD') }}"
+```
+
+The admin password is read from the `ES_ADMIN_PASSWORD` environment variable to avoid storing credentials in plain text:
+
+```bash
+export ES_ADMIN_PASSWORD="your-admin-password"
+```
+
+### Optional: Customise user settings
+
+The following variables in [`ansible-roles/kibana-users/defaults/main.yml`](ansible-roles/kibana-users/defaults/main.yml) control how users are created:
+
+```yaml
+# Number of users to create
+kibana_users_count: 20
+
+# Users will be named kibana_user1, kibana_user2, …
+kibana_user_prefix: "kibana_user"
+
+# Initial password — users should change this on first login
+kibana_user_default_password: "ChangeMe123!"
+
+# Custom role assigned to each user
+kibana_user_role_name: "kibana_developer"
+```
+
+### Create users
+
+Run the provided playbook from the `setup_ibm-cloud` directory:
+
+```bash
+ansible-playbook playbook-create.yml
+```
+
+On success, Ansible prints a summary of the created users:
+
+```
+"=========================================="
+"IBM Cloud Kibana Access Information"
+"=========================================="
+"Users created: 20"
+"Username pattern: kibana_user[1-20]"
+"Default password: ChangeMe123!"
+"=========================================="
+"IMPORTANT: Users should change their password on first login!"
+"=========================================="
+```
+
+### Delete users
+
+To remove all users and the custom role created above, run:
+
+```bash
+ansible-playbook playbook-delete.yml
+```
+
+The cleanup role will discover every user matching `kibana_user_prefix`, prompt for confirmation, then delete the users and the `kibana_developer` role. To skip the confirmation prompt, pass the variable on the command line:
+
+```bash
+ansible-playbook playbook-delete.yml -e "confirm_deletion=false"
 ```
