@@ -85,7 +85,8 @@ To work around this, log in to Docker Hub before pulling:
 docker login
 ```
 
-A free Docker Hub account raises the limit to **200 pulls per 6 hours** per account. If the shared IP limit is still being hit, ask your instructor whether a mirror registry or pre-pulled image tarball is available.
+A free Docker Hub account raises the limit to **200 pulls per 6 hours** per account.
+
 
 Your cluster might fail to start due to failing bootstrap checks. Find the following workarounds below.
 
